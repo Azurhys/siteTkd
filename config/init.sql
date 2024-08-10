@@ -1,10 +1,10 @@
-IF EXISTS DROP DATABASE taekwondo; 
+DROP DATABASE IF EXISTS taekwondo; 
 
 CREATE DATABASE taekwondo;
 
 USE taekwondo;
 
-CREATE TABLE Adherent (
+CREATE TABLE Adherents (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     Nom VARCHAR(100),
     Prenom VARCHAR(100),
@@ -29,7 +29,7 @@ CREATE TABLE PersonneUrgence (
     LienParente VARCHAR(100),
     Portable VARCHAR(15),
     AdherentID INT,
-    FOREIGN KEY (AdherentID) REFERENCES Adherent(ID)
+    FOREIGN KEY (AdherentID) REFERENCES Adherents(ID)
 );
 
 CREATE TABLE Dobok (
@@ -37,7 +37,6 @@ CREATE TABLE Dobok (
     Taille INT,
     Prix FLOAT
 );
-
 
 CREATE TABLE Formule (
     ID INT PRIMARY KEY AUTO_INCREMENT,
@@ -49,7 +48,6 @@ CREATE TABLE Formule (
     CoutTotal FLOAT
 );
 
-
 CREATE TABLE Inscription (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     AdherentID INT,
@@ -58,11 +56,10 @@ CREATE TABLE Inscription (
     ReductionPASS FLOAT,
     DobokID INT,
     ModePaiement VARCHAR(50),
-    FOREIGN KEY (AdherentID) REFERENCES Adherent(ID),
+    FOREIGN KEY (AdherentID) REFERENCES Adherents(ID),
     FOREIGN KEY (FormuleID) REFERENCES Formule(ID),
     FOREIGN KEY (DobokID) REFERENCES Dobok(ID)
 );
-
 
 CREATE TABLE Paiement (
     ID INT PRIMARY KEY AUTO_INCREMENT,
@@ -77,7 +74,7 @@ CREATE TABLE Commentaires (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     AdherentID INT,
     Commentaire TEXT,
-    FOREIGN KEY (AdherentID) REFERENCES Adherent(ID)
+    FOREIGN KEY (AdherentID) REFERENCES Adherents(ID)
 );
 
 CREATE TABLE Signature (
@@ -85,9 +82,8 @@ CREATE TABLE Signature (
     AdherentID INT,
     Date DATE,
     Signature VARCHAR(255),
-    FOREIGN KEY (AdherentID) REFERENCES Adherent(ID)
+    FOREIGN KEY (AdherentID) REFERENCES Adherents(ID)
 );
-
 
 INSERT INTO Dobok (Taille, Prix) VALUES 
 (100, 20.00), 
@@ -105,4 +101,3 @@ INSERT INTO Formule (Nom, TrancheAge, AdherentClub, LicenceFFST, Cours, CoutTota
 ('Baby Taekwondo', '4-6 ans', 30.00, 15.00, 71.00, 116.00),
 ('Enfants', '7-11 ans', 30.00, 21.00, 135.00, 186.00),
 ('Ados/Adultes', '12 ans et plus', 30.00, 25.00, 176.00, 231.00);
-
