@@ -42,6 +42,7 @@ CREATE TABLE Formule (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     Nom VARCHAR(100),
     TrancheAge VARCHAR(50),
+    Federation VARCHAR(8),
     AdherentClub FLOAT,
     Licence FLOAT,
     Cours FLOAT,
@@ -104,9 +105,9 @@ INSERT INTO Dobok (Taille, Prix) VALUES
 (180, 32.00), 
 (190, 34.00);
 
-INSERT INTO Formule (Nom, TrancheAge, AdherentClub, Licence, Cours, CoutTotal, Creneau_1, Creneau_2, Lieu) VALUES 
-('Baby', 'Enfants de 4 à 6 ans', 30.0, 15.0, 71.0, 116.0, 'Mercredi 18h-19h', NULL, 'Salle Norbert Batigne'),
-('Enfants FFST', 'Enfants de 7 à 11 ans', 30.0, 21.0, 135.0, 186.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
-('Enfants FFTDA', 'Enfants de 7 à 11 ans', 30.0, 36.0, 135.0, 201.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
-('Ados/Adultes FFST', 'A partir de 12 ans', 30.0, 25.0, 176.0, 231.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse'),
-('Ados/Adultes FFTDA', 'A partir de 12 ans', 30.0, 36.0, 176.0, 242.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse');
+INSERT INTO Formule (Nom, TrancheAge, Federation, AdherentClub, Licence, Cours, CoutTotal, Creneau_1, Creneau_2, Lieu) VALUES 
+('Baby', 'Enfants de 4 à 6 ans', 'FFST', 30.0, 15.0, 71.0, 116.0, 'Mercredi 18h-19h', NULL, 'Salle Norbert Batigne'),
+('Enfants', 'Enfants de 7 à 11 ans','FFST', 30.0, 21.0, 135.0, 186.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
+('Enfants', 'Enfants de 7 à 11 ans','FFTDA', 30.0, 36.0, 135.0, 201.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
+('Ados/Adultes', 'A partir de 12 ans','FFST', 30.0, 25.0, 176.0, 231.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse'),
+('Ados/Adultes', 'A partir de 12 ans','FFTDA', 30.0, 36.0, 176.0, 242.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse');
