@@ -1,8 +1,11 @@
-require('dotenv').config(); 
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors'); 
 const app = express();
 const adherentRoutes = require('./routes/adherentRoutes');
 const formuleRoutes = require('./routes/formuleRoutes');
+
+app.use(cors());
 
 app.use(express.json());
 

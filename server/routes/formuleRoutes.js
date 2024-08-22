@@ -15,8 +15,18 @@ router.post('/formules', async (req, res) => {
 // Read All (GET)
 router.get('/formules', async (req, res) => {
     try {
-        const formules = await Formule.findAll();
-        res.status(200).json(formules);
+        // Si le paramètre 'federation' est présent, filtrer les formules
+        const federation = req.query.federation;
+        if (federation) {
+            const formules = await Formule.findAll({
+                where: { Federation: federation }
+            });
+            res.status(200).json(formules);
+        } else {
+            // Sinon, récupérer toutes les formules
+            const formules = await Formule.findAll();
+            res.status(200).json(formules);
+        }
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
