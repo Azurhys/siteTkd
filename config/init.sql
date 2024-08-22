@@ -43,10 +43,15 @@ CREATE TABLE Formule (
     Nom VARCHAR(100),
     TrancheAge VARCHAR(50),
     AdherentClub FLOAT,
-    LicenceFFST FLOAT,
+    Licence FLOAT,
     Cours FLOAT,
-    CoutTotal FLOAT
+    CoutTotal FLOAT,
+    Creneau_1 VARCHAR(255) NOT NULL,
+    Creneau_2 VARCHAR(255),
+    Lieu VARCHAR(255)
 );
+
+
 
 CREATE TABLE Inscription (
     ID INT PRIMARY KEY AUTO_INCREMENT,
@@ -85,6 +90,8 @@ CREATE TABLE Signature (
     FOREIGN KEY (AdherentID) REFERENCES Adherents(ID)
 );
 
+-- Insertions
+
 INSERT INTO Dobok (Taille, Prix) VALUES 
 (100, 20.00), 
 (110, 20.00), 
@@ -97,7 +104,9 @@ INSERT INTO Dobok (Taille, Prix) VALUES
 (180, 32.00), 
 (190, 34.00);
 
-INSERT INTO Formule (Nom, TrancheAge, AdherentClub, LicenceFFST, Cours, CoutTotal) VALUES
-('Baby Taekwondo', '4-6 ans', 30.00, 15.00, 71.00, 116.00),
-('Enfants', '7-11 ans', 30.00, 21.00, 135.00, 186.00),
-('Ados/Adultes', '12 ans et plus', 30.00, 25.00, 176.00, 231.00);
+INSERT INTO Formule (Nom, TrancheAge, AdherentClub, Licence, Cours, CoutTotal, Creneau_1, Creneau_2, Lieu) VALUES 
+('Baby', 'Enfants de 4 à 6 ans', 30.0, 15.0, 71.0, 116.0, 'Mercredi 18h-19h', NULL, 'Salle Norbert Batigne'),
+('Enfants FFST', 'Enfants de 7 à 11 ans', 30.0, 21.0, 135.0, 186.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
+('Enfants FFTDA', 'Enfants de 7 à 11 ans', 30.0, 36.0, 135.0, 201.0, 'Lundi 19h30-20h30', 'Mercredi 19h30-20h30', 'Salle de Danse'),
+('Ados/Adultes FFST', 'A partir de 12 ans', 30.0, 25.0, 176.0, 231.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse'),
+('Ados/Adultes FFTDA', 'A partir de 12 ans', 30.0, 36.0, 176.0, 242.0, 'Lundi 20h30-22h', 'Mercredi 20h30-22h', 'Salle de Danse');
