@@ -11,6 +11,10 @@ const Formule = sequelize.define('Formule', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    Federation: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     AdherentClub: {
         type: DataTypes.FLOAT,
         allowNull: false

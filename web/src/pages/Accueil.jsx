@@ -47,7 +47,7 @@ const Accueil = () => {
         <section>
             <h2 className="text-center my-5">Formules compétition & dan</h2>
             {loadingFFTDA && <p>Chargement...</p>}
-            {errorFFTDA && <p>Erreur: {errorFFTDAT}</p>}
+            {errorFFTDA && <p>Erreur: {errorFFTDA}</p>}
             <div className="row">
                 {renderFormulas(formulasFFTDA)}
             </div>

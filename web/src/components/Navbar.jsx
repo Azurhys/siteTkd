@@ -8,19 +8,12 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav" >
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <NavLink className="nav-link text-white fs-2 mx-5" to="/" exact>Home</NavLink>
+              <NavLink className="nav-link text-white fs-2 mx-5" to="/" exact>Accueil</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link text-white fs-2 mx-5" to="/about">About</NavLink>
+              <NavLink className="nav-link text-white fs-2 mx-5" to="/inscriptions">Inscriptions</NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link text-white fs-2 mx-5" to="/services">Services</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link text-white fs-2 mx-5" to="/contact">Contact</NavLink>
-            </li>
-          </ul>
-        
+          </ul>  
       </div>
     </nav>
   );
