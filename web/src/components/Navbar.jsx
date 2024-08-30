@@ -11,7 +11,10 @@ const Navbar = () => {
               <NavLink className="nav-link text-white fs-2 mx-5" to="/" exact>Accueil</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link text-white fs-2 mx-5" to="/inscriptions">Inscriptions</NavLink>
+              <NavLink className="nav-link text-white fs-2 mx-5" to="/adherent">Adhérent</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link text-white fs-2 mx-5" to="/inscription">Inscription</NavLink>
             </li>
           </ul>  
       </div>

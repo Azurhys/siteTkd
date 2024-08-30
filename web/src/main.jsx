@@ -5,14 +5,16 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './app.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Accueil from './pages/Accueil.jsx'
-import Inscriptions from './pages/Inscriptions.jsx'
+import Adherent from './pages/Adherent.jsx'
+import Inscription from './pages/Inscription.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />}>
         <Route index element={<Accueil />} />
-        <Route path='/inscriptions' element={<Inscriptions />} />
+        <Route path='/adherent' element={<Adherent />} />
+        <Route path='/inscription' element={<Inscription />} />
       </Route>
     </Routes>
   </BrowserRouter>

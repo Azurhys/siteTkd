@@ -1,26 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { Inscription, Adherents, Formule, Dobok } = require('../models/Formule');
+const Inscription = require('../models/Inscription'); 
 
 router.post('/inscriptions', async (req, res) => {
   try {
-    const { adherentData, formuleID, dobokID, reductionFamille, reductionPASS, modePaiement } = req.body;
+    const { adherentID, formuleID, dobokID, reductionFamille, reductionPASS, modePaiement } = req.body;
 
-    const adherent = await Adherents.create(adherentData);
-
-    const inscription = await Inscription.create({
-      AdherentID: adherent.ID,
-      FormuleID: formuleID,
-      DobokID: dobokID,
-      ReductionFamille: reductionFamille,
-      ReductionPASS: reductionPASS,
-      ModePaiement: modePaiement,
+    // Créez une nouvelle inscription
+    const newInscription = await Inscription.create({
+      adherentID,
+      formuleID,
+      dobokID,
+      reductionFamille,
+      reductionPASS,
+      modePaiement
     });
 
-    res.status(201).json(inscription);
+    res.status(201).json(newInscription);
   } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+    console.error('Erreur lors de la création de l\'inscription:', error.message);
+    console.error('Stack trace:', error.stack);
+    res.status(500).json({ error: 'Erreur lors de la création de l\'inscription', details: error.message });
+  }  
 });
 
 module.exports = router;
