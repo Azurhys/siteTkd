@@ -4,7 +4,17 @@ const Inscription = require('../models/Inscription');
 
 router.post('/inscriptions', async (req, res) => {
   try {
-    const { adherentID, formuleID, dobokID, reductionFamille, reductionPASS, modePaiement } = req.body;
+    const { 
+      adherentID, 
+      formuleID, 
+      dobokID, 
+      reductionFamille, 
+      reductionPASS, 
+      codePassSport,  // Ajout du champ codePassSport
+      passeportFFTDA, // Ajout du champ passeportFFTDA
+      modePaiement,
+      coutTotal  // Ajout du champ coutTotal
+    } = req.body;
 
     // Créez une nouvelle inscription
     const newInscription = await Inscription.create({
@@ -13,7 +23,10 @@ router.post('/inscriptions', async (req, res) => {
       dobokID,
       reductionFamille,
       reductionPASS,
-      modePaiement
+      codePassSport, // Enregistrement du code Pass Sport
+      passeportFFTDA,
+      modePaiement,
+      coutTotal
     });
 
     res.status(201).json(newInscription);
@@ -23,5 +36,6 @@ router.post('/inscriptions', async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la création de l\'inscription', details: error.message });
   }  
 });
+
 
 module.exports = router;

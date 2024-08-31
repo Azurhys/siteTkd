@@ -60,12 +60,17 @@ CREATE TABLE Inscription (
     FormuleID INT,
     ReductionFamille FLOAT,
     ReductionPASS FLOAT,
-    DobokID INT,
+    DobokID INT NULL, 
     ModePaiement VARCHAR(50),
+    CoutTotal FLOAT, 
     FOREIGN KEY (AdherentID) REFERENCES Adherents(ID),
     FOREIGN KEY (FormuleID) REFERENCES Formule(ID),
     FOREIGN KEY (DobokID) REFERENCES Dobok(ID)
 );
+
+ALTER TABLE Inscription 
+ADD COLUMN PasseportFFTDA BOOLEAN DEFAULT FALSE,
+ADD COLUMN codePassSport VARCHAR(255);
 
 CREATE TABLE Paiement (
     ID INT PRIMARY KEY AUTO_INCREMENT,

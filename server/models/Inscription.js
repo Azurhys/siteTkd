@@ -13,7 +13,7 @@ const Inscription = sequelize.define('Inscription', {
   },
   dobokID: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   reductionFamille: {
     type: DataTypes.FLOAT,
@@ -23,13 +23,21 @@ const Inscription = sequelize.define('Inscription', {
     type: DataTypes.FLOAT,
     allowNull: true
   },
+  codePassSport: {
+    type: DataTypes.STRING,
+    allowNull: true // Ce champ est facultatif
+  },
   modePaiement: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  coutTotal: {
+    type: DataTypes.FLOAT,
+    allowNull: true
   }
 }, {
   tableName: 'inscription',
-  timestamps: false 
+  timestamps: false
 });
 
 module.exports = Inscription;
