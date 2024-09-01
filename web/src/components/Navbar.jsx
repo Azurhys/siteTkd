@@ -16,7 +16,11 @@ const Navbar = () => {
             <li className="nav-item">
               <NavLink className="nav-link text-white fs-2 mx-5" to="/inscription">Inscription</NavLink>
             </li>
-          </ul>  
+            <li className="nav-item">
+              <NavLink className="nav-link text-white fs-2 mx-5" to="/dashboard">Dashboard</NavLink>
+            </li> 
+          </ul> 
+          
       </div>
     </nav>
   );
