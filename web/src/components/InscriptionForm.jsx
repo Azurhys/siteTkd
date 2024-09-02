@@ -9,7 +9,8 @@ const InscriptionForm = () => {
     reductionFamille: 0,
     reductionPASS: false, // Change pour un booléen afin de cocher la case
     codePassSport: '', // Nouveau champ pour le code PASS' SPORT
-    modePaiement: 'Espèces'
+    modePaiement: 'Espèces',
+    commentaire: '' // Nouveau champ pour le commentaire
   });
 
   const [adherents, setAdherents] = useState([]);
@@ -75,9 +76,22 @@ const InscriptionForm = () => {
 
       console.log('Données envoyées:', dataToSend);
 
-      const response = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
-      console.log('Inscription créée:', response.data);
+      // Créer l'inscription
+      const inscriptionResponse = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
+      console.log('Inscription créée:', inscriptionResponse.data);
 
+      // Créer un commentaire si un texte est saisi
+      if (formData.commentaire) {
+        const commentaireData = {
+          AdherentID: formData.adherentID,
+          Commentaire: formData.commentaire
+        };
+
+        const commentaireResponse = await axios.post('http://localhost:9017/api/commentaires', commentaireData);
+        console.log('Commentaire créé:', commentaireResponse.data);
+      }
+
+      // Réinitialiser le formulaire après soumission
       setFormData({
         adherentID: '',
         formuleID: '',
@@ -87,10 +101,11 @@ const InscriptionForm = () => {
         codePassSport: '',
         passeportFFTDA: false,
         modePaiement: 'Espèces',
-        coutTotal: 0
+        coutTotal: 0,
+        commentaire: '' // Réinitialiser le champ commentaire
       });
     } catch (error) {
-      console.error('Erreur lors de la création de l\'inscription:', error.message);
+      console.error('Erreur lors de la création de l\'inscription ou du commentaire:', error.message);
     }
   };
 
@@ -100,7 +115,7 @@ const InscriptionForm = () => {
     const dobok = doboks.find(d => d.ID === parseInt(formData.dobokID));
 
     let coutTotal = 0;
-    
+
     if (formule) coutTotal += formule.CoutTotal; // Ajouter le coût de la formule
     if (dobok) coutTotal += dobok.Prix; // Ajouter le prix du dobok
     if (formData.reductionFamille) coutTotal -= parseFloat(formData.reductionFamille); // Soustraire la réduction famille
@@ -261,6 +276,19 @@ const InscriptionForm = () => {
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Coût total: {formData.coutTotal} €
         </label>
+      </div>
+      
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="commentaire">
+          Ajouter un commentaire
+        </label>
+        <textarea
+          name="commentaire"
+          value={formData.commentaire}
+          onChange={handleChange}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Entrez un commentaire ici..."
+        />
       </div>
       
       {/* Bouton de soumission */}

@@ -66,4 +66,19 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/adherent/:adherentID', async (req, res) => {
+    const { adherentID } = req.params;
+  
+    try {
+      const commentaires = await Commentaires.findAll({ where: { adherentId: adherentID } });
+      if (commentaires.length > 0) {
+        res.json(commentaires);
+      } else {
+        res.status(404).json({ error: 'Aucun commentaire trouvé pour cet adhérent.' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur lors de la récupération des commentaires pour cet adhérent.' });
+    }
+  });
+
 module.exports = router;
