@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Dashboard from '../pages/Dashboard';
 
 const Inscriptions = () => {
   const [inscriptions, setInscriptions] = useState([]);
@@ -149,6 +150,9 @@ const Inscriptions = () => {
   };
 
   return (
+    <div>
+      <Dashboard />
+    
     <div className="container mt-4">
       <h2 className="mb-4">Gestion des Inscriptions</h2>
       
@@ -169,7 +173,7 @@ const Inscriptions = () => {
         <tbody>
           {inscriptions.map(inscription => (
             <tr key={inscription.id}>
-              <td>{adherents.find(a => a.id === inscription.adherentID)?.nom} {adherents.find(a => a.id === inscription.adherentID)?.prenom}</td>
+              <td className='d-flex'> <p className='fw-bold mx-3'>{adherents.find(a => a.ID === inscription.adherentID)?.Nom} </p> {adherents.find(a => a.ID === inscription.adherentID)?.Prenom}</td>
               <td>{formules.find(f => f.id === inscription.formuleID)?.Nom} {formules.find(f => f.id === inscription.formuleID)?.Federation}</td>
               <td>{doboks.find(d => d.ID === inscription.dobokID)?.Taille}  </td>
               <td>{inscription.reductionFamille} €</td>
@@ -200,8 +204,8 @@ const Inscriptions = () => {
           >
             <option value="">-- Sélectionner un adhérent --</option>
             {adherents.map(adherent => (
-              <option key={adherent.id} value={adherent.id}>
-                {adherent.nom} {adherent.prenom}
+              <option key={adherent.ID} value={adherent.ID}>
+                {adherent.Nom} {adherent.Prenom}
               </option>
             ))}
           </select>
@@ -325,6 +329,7 @@ const Inscriptions = () => {
       </form>
 
       
+    </div>
     </div>
   );
 };

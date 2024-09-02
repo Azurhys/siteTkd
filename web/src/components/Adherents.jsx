@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Dashboard from '../pages/Dashboard';
 
 const Adherents = () => {
   const [adherents, setAdherents] = useState([]);
   const [newAdherent, setNewAdherent] = useState({
-    nom: '',
-    prenom: '',
-    genre: '',
-    dateNaissance: '',
-    poids: '',
-    taille: '',
-    adresse1: '',
-    adresse2: '',
-    codePostal: '',
-    ville: '',
-    email1: '',
-    email2: '',
-    portable1: '',
-    portable2: ''
+    Nom: '',
+    Prenom: '',
+    Genre: 'M',
+    DateNaissance: '',
+    Poids: '',
+    Taille: '',
+    Adresse1: '',
+    Adresse2: '',
+    CodePostal: '',
+    Ville: '',
+    Email1: '',
+    Email2: '',
+    Portable1: '',
+    Portable2: ''
   });
 
   const [editing, setEditing] = useState(false);
@@ -37,97 +38,317 @@ const Adherents = () => {
   };
 
   const handleInputChange = (e) => {
-    setNewAdherent({ ...newAdherent, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setNewAdherent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addAdherent = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:9017/api/adherents', newAdherent);
-      fetchAdherents();
+      if (editing && currentAdherent) {
+        // Mettre à jour l'adhérent existant
+        await axios.put(`http://localhost:9017/api/adherents/${currentAdherent.ID}`, newAdherent);
+        setAdherents((prevAdherents) =>
+          prevAdherents.map((adherent) =>
+            adherent.ID === currentAdherent.ID ? { ...newAdherent, ID: currentAdherent.ID } : adherent
+          )
+        );
+      } else {
+        // Ajouter un nouvel adhérent
+        const response = await axios.post('http://localhost:9017/api/adherents', newAdherent);
+        setAdherents([...adherents, response.data]);
+      }
+
+      // Réinitialiser le formulaire
       setNewAdherent({
-        nom: '',
-        prenom: '',
-        genre: '',
-        dateNaissance: '',
-        poids: '',
-        taille: '',
-        adresse1: '',
-        adresse2: '',
-        codePostal: '',
-        ville: '',
-        email1: '',
-        email2: '',
-        portable1: '',
-        portable2: ''
+        Nom: '',
+        Prenom: '',
+        Genre: 'M',
+        DateNaissance: '',
+        Poids: '',
+        Taille: '',
+        Adresse1: '',
+        Adresse2: '',
+        CodePostal: '',
+        Ville: '',
+        Email1: '',
+        Email2: '',
+        Portable1: '',
+        Portable2: ''
       });
+
+      setEditing(false);
+      setCurrentAdherent(null);
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'adhérent:', error.message);
+      console.error('Erreur lors de l\'ajout ou mise à jour de l\'adhérent:', error.message);
     }
   };
 
-  const deleteAdherent = async (id) => {
+  const handleEdit = (adherent) => {
+    setNewAdherent(adherent);
+    setEditing(true);
+    setCurrentAdherent(adherent);
+  };
+
+  const handleDelete = async (ID) => {
     try {
-      await axios.delete(`http://localhost:9017/api/adherents/${id}`);
-      fetchAdherents();
+      await axios.delete(`http://localhost:9017/api/adherents/${ID}`);
+      setAdherents((prevAdherents) => prevAdherents.filter((adherent) => adherent.ID !== ID));
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'adhérent:', error.message);
     }
   };
 
-  const startEditing = (adherent) => {
-    setEditing(true);
-    setCurrentAdherent(adherent);
-  };
-
-  const cancelEditing = () => {
-    setEditing(false);
-    setCurrentAdherent(null);
-  };
-
-  const updateAdherent = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(`http://localhost:9017/api/adherents/${currentAdherent.id}`, currentAdherent);
-      setEditing(false);
-      setCurrentAdherent(null);
-      fetchAdherents();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour de l\'adhérent:', error.message);
-    }
-  };
-
   return (
     <div>
-      <h2>Liste des Adhérents</h2>
-      <ul>
-        {adherents.map(adherent => (
-          <li key={adherent.id}>
-            {adherent.nom} {adherent.prenom} ({adherent.email1})
-            <button onClick={() => deleteAdherent(adherent.id)}>Supprimer</button>
-            <button onClick={() => startEditing(adherent)}>Modifier</button>
-          </li>
-        ))}
-      </ul>
+      <Dashboard />
+    
+    <div className="container mt-4">
+      <h2 className="mb-4">Gestion des Adhérents</h2>
 
-      {editing ? (
-        <form onSubmit={updateAdherent}>
-          <h3>Modifier Adhérent</h3>
-          {/* Formulaire de modification */}
-          <input type="text" name="nom" value={currentAdherent.nom} onChange={(e) => setCurrentAdherent({ ...currentAdherent, nom: e.target.value })} placeholder="Nom" />
-          {/* Ajoutez les autres champs de formulaire ici */}
-          <button type="submit">Mettre à jour</button>
-          <button onClick={cancelEditing}>Annuler</button>
-        </form>
-      ) : (
-        <form onSubmit={addAdherent}>
-          <h3>Ajouter un Adhérent</h3>
-          {/* Formulaire d'ajout */}
-          <input type="text" name="nom" value={newAdherent.nom} onChange={handleInputChange} placeholder="Nom" />
-          {/* Ajoutez les autres champs de formulaire ici */}
-          <button type="submit">Ajouter</button>
-        </form>
-      )}
+      <h3 className="mb-3">Liste des adhérents</h3>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {adherents.map((adherent) => (
+            <tr key={adherent.ID}>
+              <td>{adherent.Nom}</td>
+              <td>{adherent.Prenom}</td>
+              <td>{adherent.Email1}</td>
+              <td>
+                <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(adherent)}>
+                  Modifier
+                </button>
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(adherent.ID)}>
+                  Supprimer
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded">
+        <h3 className="mb-3">{editing ? 'Modifier l\'adhérent' : 'Ajouter un adhérent'}</h3>
+
+        {/* Utilisation du champ "Nom" */}
+        <div className="mb-3">
+          <label htmlFor="Nom" className="form-label">Nom</label>
+          <input
+            type="text"
+            id="Nom"
+            name="Nom"
+            value={newAdherent.Nom}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Nom"
+            required
+          />
+        </div>
+
+        {/* Champ: Prénom */}
+        <div className="mb-3">
+          <label htmlFor="Prenom" className="form-label">Prénom</label>
+          <input
+            type="text"
+            id="Prenom"
+            name="Prenom"
+            value={newAdherent.Prenom}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Prénom"
+            required
+          />
+        </div>
+
+        {/* Champ: Genre */}
+        <div className="mb-3">
+          <label htmlFor="Genre" className="form-label">Genre</label>
+          <select
+            id="Genre"
+            name="Genre"
+            value={newAdherent.Genre}
+            onChange={handleInputChange}
+            className="form-select"
+            required
+          >
+            <option value="">-- Sélectionner le genre --</option>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        {/* Champ: Date de naissance */}
+        <div className="mb-3">
+          <label htmlFor="DateNaissance" className="form-label">Date de Naissance</label>
+          <input
+            type="date"
+            id="DateNaissance"
+            name="DateNaissance"
+            value={newAdherent.DateNaissance}
+            onChange={handleInputChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        {/* Champ: Poids */}
+        <div className="mb-3">
+          <label htmlFor="Poids" className="form-label">Poids (kg)</label>
+          <input
+            type="number"
+            id="Poids"
+            name="Poids"
+            value={newAdherent.Poids}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Poids"
+          />
+        </div>
+
+        {/* Champ: Taille */}
+        <div className="mb-3">
+          <label htmlFor="Taille" className="form-label">Taille (cm)</label>
+          <input
+            type="number"
+            id="Taille"
+            name="Taille"
+            value={newAdherent.Taille}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Taille"
+          />
+        </div>
+
+        {/* Champ: Adresse 1 */}
+        <div className="mb-3">
+          <label htmlFor="Adresse1" className="form-label">Adresse 1</label>
+          <input
+            type="text"
+            id="Adresse1"
+            name="Adresse1"
+            value={newAdherent.Adresse1}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Adresse 1"
+            required
+          />
+        </div>
+
+        {/* Champ: Adresse 2 */}
+        <div className="mb-3">
+          <label htmlFor="Adresse2" className="form-label">Adresse 2</label>
+          <input
+            type="text"
+            id="Adresse2"
+            name="Adresse2"
+            value={newAdherent.Adresse2}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Adresse 2"
+          />
+        </div>
+
+        {/* Champ: Code Postal */}
+        <div className="mb-3">
+          <label htmlFor="CodePostal" className="form-label">Code Postal</label>
+          <input
+            type="text"
+            id="CodePostal"
+            name="CodePostal"
+            value={newAdherent.CodePostal}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Code Postal"
+            required
+          />
+        </div>
+
+        {/* Champ: Ville */}
+        <div className="mb-3">
+          <label htmlFor="Ville" className="form-label">Ville</label>
+          <input
+            type="text"
+            id="Ville"
+            name="Ville"
+            value={newAdherent.Ville}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Ville"
+            required
+          />
+        </div>
+
+        {/* Champ: Email 1 */}
+        <div className="mb-3">
+          <label htmlFor="Email1" className="form-label">Email 1</label>
+          <input
+            type="email"
+            id="Email1"
+            name="Email1"
+            value={newAdherent.Email1}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Email 1"
+            required
+          />
+        </div>
+
+        {/* Champ: Email 2 */}
+        <div className="mb-3">
+          <label htmlFor="Email2" className="form-label">Email 2</label>
+          <input
+            type="email"
+            id="Email2"
+            name="Email2"
+            value={newAdherent.Email2}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Email 2"
+          />
+        </div>
+
+        {/* Champ: Portable 1 */}
+        <div className="mb-3">
+          <label htmlFor="Portable1" className="form-label">Portable 1</label>
+          <input
+            type="tel"
+            id="Portable1"
+            name="Portable1"
+            value={newAdherent.Portable1}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Portable 1"
+          />
+        </div>
+
+        {/* Champ: Portable 2 */}
+        <div className="mb-3">
+          <label htmlFor="Portable2" className="form-label">Portable 2</label>
+          <input
+            type="tel"
+            id="Portable2"
+            name="Portable2"
+            value={newAdherent.Portable2}
+            onChange={handleInputChange}
+            className="form-control"
+            placeholder="Portable 2"
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary">
+          {editing ? 'Modifier' : 'Ajouter'}
+        </button>
+      </form>
+    </div>
     </div>
   );
 };

@@ -4,20 +4,20 @@ import axios from 'axios';
 const AdherentForm = () => {
   // État local pour les champs de formulaire
   const [formData, setFormData] = useState({
-    nom: '',
-    prenom: '',
-    genre: 'M',
-    dateNaissance: '',
-    poids: '',
-    taille: '',
-    adresse1: '',
-    adresse2: '',
-    codePostal: '',
-    ville: '',
-    email1: '',
-    email2: '',
-    portable1: '',
-    portable2: ''
+    Nom: '',
+    Prenom: '',
+    Genre: 'M',
+    DateNaissance: '',
+    Poids: '',
+    Taille: '',
+    Adresse1: '',
+    Adresse2: '',
+    CodePostal: '',
+    Ville: '',
+    Email1: '',
+    Email2: '',
+    Portable1: '',
+    Portable2: ''
   });
 
   // Gestionnaire de changement pour les champs de formulaire
@@ -32,24 +32,25 @@ const AdherentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Données envoyées:', formData); // Déboguer les données envoyées
       const response = await axios.post('http://localhost:3000/api/adherents', formData);
       console.log('Adhérent créé:', response.data);
       // Réinitialiser le formulaire après la soumission
       setFormData({
-        nom: '',
-        prenom: '',
-        genre: 'M',
-        dateNaissance: '',
-        poids: '',
-        taille: '',
-        adresse1: '',
-        adresse2: '',
-        codePostal: '',
-        ville: '',
-        email1: '',
-        email2: '',
-        portable1: '',
-        portable2: ''
+        Nom: '',
+        Prenom: '',
+        Genre: 'M',
+        DateNaissance: '',
+        Poids: '',
+        Taille: '',
+        Adresse1: '',
+        Adresse2: '',
+        CodePostal: '',
+        Ville: '',
+        Email1: '',
+        Email2: '',
+        Portable1: '',
+        Portable2: ''
       });
     } catch (error) {
       console.error('Erreur lors de la création de l\'adhérent:', error.message);
@@ -62,13 +63,13 @@ const AdherentForm = () => {
       
       {/* Nom */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nom">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Nom">
           Nom
         </label>
         <input
           type="text"
-          name="nom"
-          value={formData.nom}
+          name="Nom"
+          value={formData.Nom}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -77,13 +78,13 @@ const AdherentForm = () => {
 
       {/* Prénom */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="prenom">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Prenom">
           Prénom
         </label>
         <input
           type="text"
-          name="prenom"
-          value={formData.prenom}
+          name="Prenom"
+          value={formData.Prenom}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -92,12 +93,12 @@ const AdherentForm = () => {
 
       {/* Genre */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="genre">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Genre">
           Genre
         </label>
         <select
-          name="genre"
-          value={formData.genre}
+          name="Genre"
+          value={formData.Genre}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -109,13 +110,13 @@ const AdherentForm = () => {
 
       {/* Date de Naissance */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dateNaissance">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="DateNaissance">
           Date de Naissance
         </label>
         <input
           type="date"
-          name="dateNaissance"
-          value={formData.dateNaissance}
+          name="DateNaissance"
+          value={formData.DateNaissance}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -124,13 +125,13 @@ const AdherentForm = () => {
 
       {/* Poids */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="poids">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Poids">
           Poids (en kg)
         </label>
         <input
           type="number"
-          name="poids"
-          value={formData.poids}
+          name="Poids"
+          value={formData.Poids}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -139,13 +140,13 @@ const AdherentForm = () => {
 
       {/* Taille */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="taille">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Taille">
           Taille (en cm)
         </label>
         <input
           type="number"
-          name="taille"
-          value={formData.taille}
+          name="Taille"
+          value={formData.Taille}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -154,13 +155,13 @@ const AdherentForm = () => {
 
       {/* Adresse 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="adresse1">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Adresse1">
           Adresse 1
         </label>
         <input
           type="text"
-          name="adresse1"
-          value={formData.adresse1}
+          name="Adresse1"
+          value={formData.Adresse1}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -169,13 +170,13 @@ const AdherentForm = () => {
 
       {/* Adresse 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="adresse2">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Adresse2">
           Adresse 2
         </label>
         <input
           type="text"
-          name="adresse2"
-          value={formData.adresse2}
+          name="Adresse2"
+          value={formData.Adresse2}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
@@ -183,13 +184,13 @@ const AdherentForm = () => {
 
       {/* Code Postal */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="codePostal">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="CodePostal">
           Code Postal
         </label>
         <input
           type="text"
-          name="codePostal"
-          value={formData.codePostal}
+          name="CodePostal"
+          value={formData.CodePostal}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -198,13 +199,13 @@ const AdherentForm = () => {
 
       {/* Ville */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ville">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Ville">
           Ville
         </label>
         <input
           type="text"
-          name="ville"
-          value={formData.ville}
+          name="Ville"
+          value={formData.Ville}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -213,13 +214,13 @@ const AdherentForm = () => {
 
       {/* Email 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email1">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Email1">
           Email 1
         </label>
         <input
           type="email"
-          name="email1"
-          value={formData.email1}
+          name="Email1"
+          value={formData.Email1}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -228,13 +229,13 @@ const AdherentForm = () => {
 
       {/* Email 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email2">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Email2">
           Email 2
         </label>
         <input
           type="email"
-          name="email2"
-          value={formData.email2}
+          name="Email2"
+          value={formData.Email2}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
@@ -242,13 +243,13 @@ const AdherentForm = () => {
 
       {/* Portable 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="portable1">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Portable1">
           Portable 1
         </label>
         <input
           type="tel"
-          name="portable1"
-          value={formData.portable1}
+          name="Portable1"
+          value={formData.Portable1}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
@@ -257,13 +258,13 @@ const AdherentForm = () => {
 
       {/* Portable 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="portable2">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Portable2">
           Portable 2
         </label>
         <input
           type="tel"
-          name="portable2"
-          value={formData.portable2}
+          name="Portable2"
+          value={formData.Portable2}
           onChange={handleChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />

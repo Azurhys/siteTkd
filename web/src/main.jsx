@@ -8,6 +8,8 @@ import Accueil from './pages/Accueil.jsx'
 import Adherent from './pages/Adherent.jsx'
 import Inscription from './pages/Inscription.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import Adherents from './components/Adherents.jsx'
+import Inscriptions from './components/Inscriptions.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -17,6 +19,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/adherent' element={<Adherent />} />
         <Route path='/inscription' element={<Inscription />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/adherents' element={<Adherents />} />
+        <Route path='/inscriptions' element={<Inscriptions />} />
       </Route>
     </Routes>
   </BrowserRouter>

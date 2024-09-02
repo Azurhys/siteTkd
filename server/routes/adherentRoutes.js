@@ -1,66 +1,139 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../frameworks/db/sequelize');
-const AdherentRepository = require('../repositories/AdherentRepository');
-const CreateAdherent = require('../usecases/CreateAdherent');
-const AdherentController = require('../controllers/AdherentController');
+const Adherent = require('../models/Adherent');
 
-const adherentRepository = new AdherentRepository(db);
-const createAdherent = new CreateAdherent(adherentRepository);
-const adherentController = new AdherentController(createAdherent);
+// Créer un nouvel adhérent
+router.post('/adherents', async (req, res) => {
+  try {
+    const {
+      Nom,
+      Prenom,
+      Genre,
+      DateNaissance,
+      Poids,
+      Taille,
+      Adresse1,
+      Adresse2,
+      CodePostal,
+      Ville,
+      Email1,
+      Email2,
+      Portable1,
+      Portable2
+    } = req.body;
 
-// Route pour créer un nouvel adhérent
-router.post('/adherents', (req, res) => adherentController.createAdherent(req, res));
+    const newAdherent = await Adherent.create({
+      Nom,
+      Prenom,
+      Genre,
+      DateNaissance,
+      Poids,
+      Taille,
+      Adresse1,
+      Adresse2,
+      CodePostal,
+      Ville,
+      Email1,
+      Email2,
+      Portable1,
+      Portable2
+    });
 
-// Route pour récupérer tous les adhérents
-router.get('/adherents', (req, res) => adherentController.getAllAdherents(req, res));
+    res.status(201).json(newAdherent);
+  } catch (error) {
+    console.error("Erreur lors de la création de l'adhérent:", error.message);
+    res.status(500).json({ error: "Erreur lors de la création de l'adhérent", details: error.message });
+  }
+});
 
-// Route pour récupérer un adhérent spécifique par ID
+// Lire tous les adhérents
+router.get('/adherents', async (req, res) => {
+  try {
+    const adherents = await Adherent.findAll();
+    res.status(200).json(adherents);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des adhérents:", error.message);
+    res.status(500).json({ error: "Erreur lors de la récupération des adhérents", details: error.message });
+  }
+});
+
+// Lire un adhérent spécifique par ID
 router.get('/adherents/:id', async (req, res) => {
   try {
-    const adherent = await adherentRepository.findById(req.params.id);
+    const adherent = await Adherent.findByPk(req.params.id);
     if (adherent) {
       res.status(200).json(adherent);
     } else {
       res.status(404).json({ error: 'Adhérent non trouvé' });
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération de l\'adhérent:', error.message);
-    res.status(500).json({ error: 'Erreur lors de la récupération de l\'adhérent', details: error.message });
+    console.error("Erreur lors de la récupération de l'adhérent:", error.message);
+    res.status(500).json({ error: "Erreur lors de la récupération de l'adhérent", details: error.message });
   }
 });
 
-// Route pour mettre à jour un adhérent par ID
+// Mettre à jour un adhérent par ID
 router.put('/adherents/:id', async (req, res) => {
   try {
-    const adherent = await adherentRepository.findById(req.params.id);
+    const {
+      Nom,
+      Prenom,
+      Genre,
+      DateNaissance,
+      Poids,
+      Taille,
+      Adresse1,
+      Adresse2,
+      CodePostal,
+      Ville,
+      Email1,
+      Email2,
+      Portable1,
+      Portable2
+    } = req.body;
+
+    const adherent = await Adherent.findByPk(req.params.id);
     if (adherent) {
-      await adherentRepository.update(req.params.id, req.body);
-      res.status(200).json({ message: 'Adhérent mis à jour avec succès' });
+      adherent.Nom = Nom;
+      adherent.Prenom = Prenom;
+      adherent.Genre = Genre;
+      adherent.DateNaissance = DateNaissance;
+      adherent.Poids = Poids;
+      adherent.Taille = Taille;
+      adherent.Adresse1 = Adresse1;
+      adherent.Adresse2 = Adresse2;
+      adherent.CodePostal = CodePostal;
+      adherent.Ville = Ville;
+      adherent.Email1 = Email1;
+      adherent.Email2 = Email2;
+      adherent.Portable1 = Portable1;
+      adherent.Portable2 = Portable2;
+
+      await adherent.save();
+      res.status(200).json(adherent);
     } else {
       res.status(404).json({ error: 'Adhérent non trouvé' });
     }
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'adhérent:', error.message);
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'adhérent', details: error.message });
+    console.error("Erreur lors de la mise à jour de l'adhérent:", error.message);
+    res.status(500).json({ error: "Erreur lors de la mise à jour de l'adhérent", details: error.message });
   }
 });
 
-// Route pour supprimer un adhérent par ID
+// Supprimer un adhérent par ID
 router.delete('/adherents/:id', async (req, res) => {
   try {
-    const adherent = await adherentRepository.findById(req.params.id);
+    const adherent = await Adherent.findByPk(req.params.id);
     if (adherent) {
-      await adherentRepository.delete(req.params.id);
+      await adherent.destroy();
       res.status(204).send(); // Pas de contenu à renvoyer après suppression
     } else {
       res.status(404).json({ error: 'Adhérent non trouvé' });
     }
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'adhérent:', error.message);
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'adhérent', details: error.message });
+    console.error("Erreur lors de la suppression de l'adhérent:", error.message);
+    res.status(500).json({ error: "Erreur lors de la suppression de l'adhérent", details: error.message });
   }
 });
-
 
 module.exports = router;

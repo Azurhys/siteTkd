@@ -132,8 +132,8 @@ const InscriptionForm = () => {
         >
           <option value="">-- Sélectionner un adhérent --</option>
           {adherents.map(adherent => (
-            <option key={adherent.id} value={adherent.id}>
-              {adherent.nom} {adherent.prenom}
+            <option key={adherent.ID} value={adherent.ID}>
+              {adherent.Nom} {adherent.Prenom}
             </option>
           ))}
         </select>
