@@ -27,11 +27,22 @@ const Adherents = () => {
   // State pour les commentaires
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [currentAdherentIdForComment, setCurrentAdherentIdForComment] = useState(null);
+  const [commentToEdit, setCommentToEdit] = useState(null);
+  const [currentAdherentForComment, setCurrentAdherentForComment] = useState(null);
+  const [hasComments, setHasComments] = useState(false);
+  const [adherentDetails, setAdherentDetails] = useState(null); // État pour les détails de l'adhérent
 
   useEffect(() => {
     fetchAdherents();
+    fetchAllComments(); // Ajout de l'appel pour récupérer tous les commentaires
   }, []);
+
+  useEffect(() => {
+    if (currentAdherentForComment) {
+      fetchAdherentDetails(currentAdherentForComment);
+      fetchComments(currentAdherentForComment);
+    }
+  }, [currentAdherentForComment]);
 
   const fetchAdherents = async () => {
     try {
@@ -42,14 +53,35 @@ const Adherents = () => {
     }
   };
 
-  const fetchComments = async (adherentId) => {
+  const fetchAllComments = async () => {
     try {
-      // Mise à jour de l'URL pour récupérer les commentaires par adherentID
-      const response = await axios.get(`http://localhost:9017/api/commentaires/adherent/${adherentId}`);
+      const response = await axios.get('http://localhost:9017/api/commentaires');
       setComments(response.data);
-      setCurrentAdherentIdForComment(adherentId);
     } catch (error) {
       console.error('Erreur lors du chargement des commentaires:', error.message);
+    }
+  };
+
+  const fetchAdherentDetails = async (adherentId) => {
+    try {
+      const response = await axios.get(`http://localhost:9017/api/adherents/${adherentId}`);
+      setAdherentDetails(response.data);
+    } catch (error) {
+      console.error('Erreur lors du chargement des détails de l\'adhérent:', error.message);
+      setAdherentDetails(null); // Réinitialiser les détails en cas d'erreur
+    }
+  };
+
+  const fetchComments = async (adherentId) => {
+    try {
+      const response = await axios.get(`http://localhost:9017/api/commentaires/adherent/${adherentId}`);
+      const comments = response.data;
+      setComments(comments);
+      setHasComments(comments.length > 0);
+    } catch (error) {
+      console.error('Erreur lors du chargement des commentaires:', error.message);
+      setComments([]);
+      setHasComments(false); // Met à jour pour s'assurer que le formulaire de commentaire est affiché
     }
   };
 
@@ -106,24 +138,38 @@ const Adherents = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!currentAdherentIdForComment) return;
+    if (!currentAdherentForComment) return;
 
     try {
-      // Mise à jour de l'URL pour ajouter un commentaire pour un adherent spécifique
       const response = await axios.post(`http://localhost:9017/api/commentaires`, {
-        content: newComment,
-        adherentId: currentAdherentIdForComment
+        Commentaire: newComment,
+        AdherentID: currentAdherentForComment
       });
       setComments([...comments, response.data]);
       setNewComment('');
+      setHasComments(true); // S'assure que le champ est affiché même lorsqu'il y a déjà des commentaires
     } catch (error) {
       console.error('Erreur lors de l\'ajout du commentaire:', error.message);
     }
   };
 
+  const handleEditComment = async (commentId, updatedComment) => {
+    try {
+      const response = await axios.put(`http://localhost:9017/api/commentaires/${commentId}`, { Commentaire: updatedComment });
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment.ID === commentId ? response.data : comment
+        )
+      );
+      setCommentToEdit(null); // Réinitialiser l'état après la modification
+      setNewComment(''); // Réinitialiser le champ de commentaire
+    } catch (error) {
+      console.error('Erreur lors de la modification du commentaire:', error.message);
+    }
+  };
+
   const handleDeleteComment = async (commentId) => {
     try {
-      // Mise à jour de l'URL pour la suppression d'un commentaire
       await axios.delete(`http://localhost:9017/api/commentaires/${commentId}`);
       setComments((prevComments) => prevComments.filter((comment) => comment.ID !== commentId));
     } catch (error) {
@@ -150,70 +196,114 @@ const Adherents = () => {
     <div>
       <Dashboard />
     
-    <div className="container mt-4">
-      <h2 className="mb-4">Gestion des Adhérents</h2>
+      <div className="container mt-4">
+        <h2 className="mb-4">Gestion des Adhérents</h2>
 
-      <h3 className="mb-3">Liste des adhérents</h3>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {adherents.map((adherent) => (
-            <tr key={adherent.ID}>
-              <td>{adherent.Nom}</td>
-              <td>{adherent.Prenom}</td>
-              <td>{adherent.Email1}</td>
-              <td>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(adherent)}>
-                  Modifier
-                </button>
-                <button className="btn btn-danger btn-sm me-2" onClick={() => handleDelete(adherent.ID)}>
-                  Supprimer
-                </button>
-                <button className="btn btn-info btn-sm" onClick={() => fetchComments(adherent.ID)}>
-                  Voir Commentaires
-                </button>
-              </td>
+        <h3 className="mb-3">Liste des adhérents</h3>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Email</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {currentAdherentIdForComment && (
-        <div className="mt-4">
-          <h3>Commentaires pour l'adhérent {currentAdherentIdForComment}</h3>
-          <ul className="list-group">
-            {comments.map((comment) => (
-              <li key={comment.ID} className="list-group-item d-flex justify-content-between align-items-center">
-                {comment.content}
-                <button className="btn btn-danger btn-sm" onClick={() => handleDeleteComment(comment.ID)}>
-                  Supprimer
-                </button>
-              </li>
+          </thead>
+          <tbody>
+            {adherents.map((adherent) => (
+              <tr key={adherent.ID}>
+                <td>{adherent.Nom}</td>
+                <td>{adherent.Prenom}</td>
+                <td>{adherent.Email1}</td>
+                <td>
+                  <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(adherent)}>
+                    Modifier
+                  </button>
+                  <button className="btn btn-danger btn-sm me-2" onClick={() => handleDelete(adherent.ID)}>
+                    Supprimer
+                  </button>
+                  <button
+                    className="btn btn-info btn-sm"
+                    onClick={() => setCurrentAdherentForComment(adherent.ID)}
+                  >
+                    Commentaires
+                  </button>
+                </td>
+              </tr>
             ))}
-          </ul>
+          </tbody>
+        </table>
 
-          <form onSubmit={handleCommentSubmit} className="mt-3">
-            <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Ajouter un commentaire"
-                value={newComment}
-                onChange={handleCommentChange}
-                required
-              />
-              <button type="submit" className="btn btn-primary">Ajouter</button>
-            </div>
-          </form>
-        </div>
-      )}
+        {currentAdherentForComment && adherentDetails && (
+          <div className="mt-4">
+            <h3>Commentaires pour l'adhérent : {adherentDetails.Nom} {adherentDetails.Prenom}</h3>
+            
+            <ul className="list-group mb-3">
+              {comments.map((comment) => (
+                <li key={comment.ID} className="list-group-item d-flex justify-content-between align-items-center">
+                  {commentToEdit && commentToEdit.ID === comment.ID ? (
+                    <div className="d-flex">
+                      <input
+                        type="text"
+                        className="form-control me-2"
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                      />
+                      <button
+                        className="btn btn-success btn-sm me-2"
+                        onClick={() => handleEditComment(comment.ID, newComment)}
+                      >
+                        Enregistrer
+                      </button>
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => setCommentToEdit(null)}
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="d-flex justify-content-between w-100">
+                      <span>{comment.Commentaire}</span>
+                      <div>
+                        <button
+                          className="btn btn-warning btn-sm me-2"
+                          onClick={() => {
+                            setCommentToEdit(comment);
+                            setNewComment(comment.Commentaire);
+                          }}
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDeleteComment(comment.ID)}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            {/* Formulaire d'ajout de commentaire */}
+            <form onSubmit={handleCommentSubmit} className="my-3">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Ajouter un commentaire"
+                  value={newComment}
+                  onChange={handleCommentChange}
+                  required
+                />
+                <button type="submit" className="btn btn-primary">Ajouter</button>
+              </div>
+            </form>
+          </div>
+        )}
 
       <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded">
         <h3 className="mb-3">{editing ? 'Modifier l\'adhérent' : 'Ajouter un adhérent'}</h3>
