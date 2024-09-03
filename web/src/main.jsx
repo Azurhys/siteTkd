@@ -10,6 +10,7 @@ import Inscription from './pages/Inscription.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Adherents from './components/Adherents.jsx'
 import Inscriptions from './components/Inscriptions.jsx'
+import PaiementPage from './pages/PaiementPage.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/adherents' element={<Adherents />} />
         <Route path='/inscriptions' element={<Inscriptions />} />
+        <Route path="/paiements/:inscriptionID" element={<PaiementPage />} />
       </Route>
     </Routes>
   </BrowserRouter>

@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Utilisation de useNavigate
+import { toast } from 'react-toastify'
 
 const InscriptionForm = () => {
   const [formData, setFormData] = useState({
     adherentID: '',
     formuleID: '',
-    dobokID: '', // Gérer l'option "Aucun Dobok"
+    dobokID: '',
     reductionFamille: 0,
-    reductionPASS: false, // Change pour un booléen afin de cocher la case
-    codePassSport: '', // Nouveau champ pour le code PASS' SPORT
+    reductionPASS: false,
+    codePassSport: '',
+    passeportFFTDA: false,
     modePaiement: 'Espèces',
-    commentaire: '' // Nouveau champ pour le commentaire
+    coutTotal: 0,
+    commentaire: ''
   });
 
   const [adherents, setAdherents] = useState([]);
   const [formules, setFormules] = useState([]);
   const [doboks, setDoboks] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate(); // Utiliser useNavigate pour rediriger
 
   useEffect(() => {
-    // Charger les adhérents, formules et doboks depuis l'API
     const fetchAdherents = async () => {
       try {
         const response = await axios.get('http://localhost:9017/api/adherents');
         setAdherents(response.data);
       } catch (error) {
-        console.error('Erreur lors du chargement des adhérents:', error.message);
+        toast.error('Erreur lors du chargement des adhérents:', error.message);
       }
     };
 
@@ -33,7 +39,7 @@ const InscriptionForm = () => {
         const response = await axios.get('http://localhost:9017/api/formules');
         setFormules(response.data);
       } catch (error) {
-        console.error('Erreur lors du chargement des formules:', error.message);
+        toast.error('Erreur lors du chargement des formules:', error.message);
       }
     };
 
@@ -42,7 +48,7 @@ const InscriptionForm = () => {
         const response = await axios.get('http://localhost:9017/api/doboks');
         setDoboks(response.data);
       } catch (error) {
-        console.error('Erreur lors du chargement des doboks:', error.message);
+        toast.error('Erreur lors du chargement des doboks:', error.message);
       }
     };
 
@@ -61,6 +67,8 @@ const InscriptionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     try {
       const dataToSend = {
         adherentID: formData.adherentID,
@@ -74,38 +82,20 @@ const InscriptionForm = () => {
         codePassSport: formData.reductionPASS ? formData.codePassSport : null
       };
 
-      console.log('Données envoyées:', dataToSend);
 
       // Créer l'inscription
       const inscriptionResponse = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
-      console.log('Inscription créée:', inscriptionResponse.data);
 
-      // Créer un commentaire si un texte est saisi
-      if (formData.commentaire) {
-        const commentaireData = {
-          AdherentID: formData.adherentID,
-          Commentaire: formData.commentaire
-        };
+      const createdInscriptionID = inscriptionResponse.data.id; // Récupérer l'ID de l'inscription créée
 
-        const commentaireResponse = await axios.post('http://localhost:9017/api/commentaires', commentaireData);
-        console.log('Commentaire créé:', commentaireResponse.data);
-      }
+      // Rediriger vers la page des paiements avec l'ID de l'inscription
+      toast.success('Inscription enregistrée avec succès.');
+      navigate(`/paiements/${createdInscriptionID}`);
 
-      // Réinitialiser le formulaire après soumission
-      setFormData({
-        adherentID: '',
-        formuleID: '',
-        dobokID: '',
-        reductionFamille: 0,
-        reductionPASS: false,
-        codePassSport: '',
-        passeportFFTDA: false,
-        modePaiement: 'Espèces',
-        coutTotal: 0,
-        commentaire: '' // Réinitialiser le champ commentaire
-      });
     } catch (error) {
-      console.error('Erreur lors de la création de l\'inscription ou du commentaire:', error.message);
+      toast.error("Erreur lors de la création de l'inscription ou du commentaire:", error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -116,18 +106,17 @@ const InscriptionForm = () => {
 
     let coutTotal = 0;
 
-    if (formule) coutTotal += formule.CoutTotal; // Ajouter le coût de la formule
-    if (dobok) coutTotal += dobok.Prix; // Ajouter le prix du dobok
-    if (formData.reductionFamille) coutTotal -= parseFloat(formData.reductionFamille); // Soustraire la réduction famille
-    if (formData.reductionPASS) coutTotal -= 50; // Soustraire 50€ si PASS' SPORT est appliqué
-    if (formData.passeportFFTDA) coutTotal += 20; // Ajouter 20€ pour le passeport FFTDA
+    if (formule) coutTotal += formule.CoutTotal;
+    if (dobok) coutTotal += dobok.Prix;
+    if (formData.reductionFamille) coutTotal -= parseFloat(formData.reductionFamille);
+    if (formData.reductionPASS) coutTotal -= 50;
+    if (formData.passeportFFTDA) coutTotal += 20;
 
     setFormData(prevData => ({
       ...prevData,
-      coutTotal: Math.max(coutTotal, 0) // Assurer que le coût total ne soit pas négatif
+      coutTotal: Math.max(coutTotal, 0)
     }));
   }, [formData.formuleID, formData.dobokID, formData.reductionFamille, formData.reductionPASS, formData.passeportFFTDA]);
-
 
   return (
     <form onSubmit={handleSubmit} className="m-4 p-4 border rounded bg-light">
@@ -278,6 +267,8 @@ const InscriptionForm = () => {
         </label>
       </div>
       
+      
+
       <div className="mb-4">
         <label className="form-label fs-4 fw-bold" htmlFor="commentaire">
           Ajouter un commentaire
@@ -291,13 +282,16 @@ const InscriptionForm = () => {
         />
       </div>
       
-      {/* Bouton de soumission */}
+      
+       {/* Bouton de soumission */}
       <button
         type="submit"
         className='btn btn-success'
+        disabled={isSubmitting}
       >
-        Ajouter l'inscription
+        {isSubmitting ? 'Enregistrement...' : 'Ajouter l\'inscription'}
       </button>
+
     </form>
   );
 };

@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AdherentForm = () => {
   // État local pour les champs de formulaire
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     Nom: '',
     Prenom: '',
@@ -32,10 +36,7 @@ const AdherentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log('Données envoyées:', formData); // Déboguer les données envoyées
       const response = await axios.post('http://localhost:3000/api/adherents', formData);
-      console.log('Adhérent créé:', response.data);
-      // Réinitialiser le formulaire après la soumission
       setFormData({
         Nom: '',
         Prenom: '',
@@ -52,8 +53,10 @@ const AdherentForm = () => {
         Portable1: '',
         Portable2: ''
       });
+      toast.success('Adhérent créé avec succès !')
+      navigate('/inscription')
     } catch (error) {
-      console.error('Erreur lors de la création de l\'adhérent:', error.message);
+      toast.error('Erreur lors de la création de l\'adhérent:', error.message);
     }
   };
 
