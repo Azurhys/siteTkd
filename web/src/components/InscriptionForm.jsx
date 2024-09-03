@@ -82,10 +82,7 @@ const InscriptionForm = () => {
         codePassSport: formData.reductionPASS ? formData.codePassSport : null
       };
 
-
-      // Créer l'inscription
       const inscriptionResponse = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
-
       const createdInscriptionID = inscriptionResponse.data.id; // Récupérer l'ID de l'inscription créée
 
       // Rediriger vers la page des paiements avec l'ID de l'inscription

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
+
 const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
   const [nombreEcheances, setNombreEcheances] = useState(1);
   const [paiements, setPaiements] = useState([]);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     calculerEcheancier();
   }, [nombreEcheances, coutTotal]);
 
   const calculerEcheancier = () => {
-    // Calcul du montant par échéance et arrondi au chiffre entier le plus proche
     const montantParEcheance = Math.round(coutTotal / nombreEcheances);
     const echeancier = Array.from({ length: nombreEcheances }, (_, i) => ({
       Montant: montantParEcheance,
@@ -20,7 +20,6 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
       MoyenPaiement: modePaiement,
     }));
 
-    // Ajuster le dernier paiement pour s'assurer que le total soit exact
     const totalCalcule = montantParEcheance * nombreEcheances;
     const difference = totalCalcule - coutTotal;
     if (difference !== 0) {
@@ -47,9 +46,19 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
 
       await Promise.all(promises);
       toast.success('Les paiements ont été enregistrés avec succès.');
+
+      // Télécharger le PDF après avoir enregistré les paiements
+      const pdfUrl = `http://localhost:9017/api/pdf/inscription/${inscriptionID}`;
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.target = '_blank';
+      link.download = `inscription-${inscriptionID}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Rediriger vers la page des adhérents après le téléchargement du PDF
       navigate('/adherent');
-      
-      
     } catch (error) {
       console.error('Erreur lors de la création des paiements :', error);
       toast.error('Erreur lors de la création des paiements.');
@@ -93,7 +102,6 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
       <button className="btn btn-success" onClick={enregistrerPaiements}>
         Enregistrer les paiements
       </button>
-
     </div>
   );
 };
