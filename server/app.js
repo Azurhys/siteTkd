@@ -9,9 +9,10 @@ const dobokRoutes = require('./routes/dobokRoutes');
 const paiementRoutes = require('./routes/paiement');
 const commentairesRoutes = require('./routes/commentaires');
 const pdfRoutes = require('./routes/pdf')
-
+const path = require('path')
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 app.use('/api', adherentRoutes);

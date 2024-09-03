@@ -6,6 +6,7 @@ const Inscription = require('../models/Inscription'); // Modèle d'inscription
 const Adherent = require('../models/Adherent'); // Modèle d'adhérent
 const Paiement = require('../models/Paiement'); // Modèle de paiement
 const Commentaires = require('../models/Commentaires'); // Modèle de commentaire
+const path = require('path');
 
 router.get('/inscription/:id', async (req, res) => {
   const { id } = req.params;
@@ -41,7 +42,7 @@ router.get('/inscription/:id', async (req, res) => {
 
     const paiementsGroupes = {};
     paiements.forEach((paiement) => {
-      const key = paiement.mois || ' unique'; // Utilisez une clé unique pour chaque échéance
+      const key = paiement.mois || ''; // Utilisez une clé unique pour chaque échéance
       if (!paiementsGroupes[key]) {
         paiementsGroupes[key] = [];
       }
@@ -58,10 +59,14 @@ router.get('/inscription/:id', async (req, res) => {
     // Pipe le document vers la réponse HTTP
     doc.pipe(res);
 
-    const logoPath = '../public/logo.jpg'; // Chemin vers votre image
+    const logoPath = path.join(__dirname, '..', 'public', 'logo.png');
+
+    // Vérifiez si le fichier existe avant de l'insérer dans le PDF
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 50, 50, { width: 100 }); // Insère une image à la position (x=50, y=50) avec une largeur de 100
+      doc.image(logoPath, 40, 0, { width: 100 }); // Ajustez les coordonnées et la largeur selon vos besoins
       doc.moveDown(2);
+    } else {
+      console.error('Logo non trouvé à l\'emplacement spécifié :', logoPath);
     }
 
     // Ajouter le titre
@@ -69,21 +74,31 @@ router.get('/inscription/:id', async (req, res) => {
     doc.moveDown(1.5);
 
     // Section Informations Adhérent
-    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('1. Informations de l\'Adhérent:');
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Nom: ${adherent.dataValues.Nom || 'N/A'}`);
-    doc.fillColor('black').text(`Email: ${adherent.dataValues.Email1 || 'N/A'}`);
-    doc.fillColor('black').text(`Téléphone: ${adherent.dataValues.Portable1 || 'N/A'}`);
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('1. ETAT CIVIL :');
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Nom : ${adherent.dataValues.Nom || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Prenom : ${adherent.dataValues.Prenom || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Genre : ${adherent.dataValues.Genre || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Date de naissance : ${adherent.dataValues.DateNaissance || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Poids : ${adherent.dataValues.Poids || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Taille : ${adherent.dataValues.Taille || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Adresse : ${adherent.dataValues.Adresse1 || ''} ${adherent.dataValues.CodePostal} ${adherent.dataValues.Ville}`);
+    doc.fillColor('black').text(`Email 1: ${adherent.dataValues.Email1 || ''}`);
+    doc.fillColor('black').text(`Email 2: ${adherent.dataValues.Email2 || ''}`);
+    doc.fillColor('black').text(`Téléphone 1 : ${adherent.dataValues.Portable1 || ''}`);
+    doc.fillColor('black').text(`Téléphone 2 : ${adherent.dataValues.Portable2 || ''}`);
     doc.moveDown(1);
 
     // Section Informations Inscription
-    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('2. Détails de l\'Inscription:');
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`ID d'inscription: ${inscription.dataValues.id}`);
-    doc.fillColor('black').text(`Formule ID: ${inscription.dataValues.formuleID}`);
-    doc.fillColor('black').text(`Coût Total: ${inscription.dataValues.coutTotal} €`);
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('3. DETAILS DE L\'INSCRIPTION:');
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Formule : ${inscription.dataValues.formuleID}`);
+    doc.fillColor('black').text(`Réduction famille nombreuse : ${inscription.dataValues.reductionFamille ? inscription.dataValues.reductionFamille + ' €' : 'Aucune'}`);
+    doc.fillColor('black').text(`Reduction PASS'SPORT : ${inscription.dataValues.reductionPASS ? inscription.dataValues.reductionPASS + ' €' : 'Aucune'} ${inscription.dataValues.codePassSport ? ', code PASS\'SPORT' + inscription.dataValues.codePassSport : ''} `);
+    doc.fillColor('black').text(`Option achat de dobok : ${inscription.dataValues.dobokID ? inscription.dataValues.dobokID + ' €' :'Aucun dobok'} `);
+    doc.fontSize(14).fillColor('black').font('Helvetica-Bold').text(`Coût Total: ${inscription.dataValues.coutTotal} €`);
     doc.moveDown(1);
 
     // Section Paiements
-    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('3. Échéancier de Paiements:');
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('4. MODE DE PAIEMENT & ECHEANCIERS :');
     doc.fillColor('black');
     
     // Afficher les paiements regroupés
@@ -97,17 +112,28 @@ router.get('/inscription/:id', async (req, res) => {
     });
 
     // Section Commentaires
-    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('4. Commentaires:');
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('5. COMMENTAIRE:');
     if (commentaires.length > 0) {
       commentaires.forEach((commentaire, index) => {
         doc.fontSize(12).fillColor('black').font('Helvetica').text(`Commentaire ${index + 1}: ${commentaire.dataValues.Commentaire || 'N/A'}`);
       });
     } else {
-      doc.fontSize(12).fillColor('black').font('Helvetica').text('Aucun commentaire disponible.');
+      doc.fontSize(12).fillColor('black').font('Helvetica').text('');
     }
-    doc.moveDown(2);
+    doc.moveDown(1);
 
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('6. SIGNATURE:');
+    doc.fontSize(12).fillColor('black').font('Helvetica').text('Date et Signature de l’adhérent ou de son représentant légal : ');
+    doc.moveDown(3);
 
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('U.S.M. (UNION SPORTIVE DE MAROLLES)')
+    doc.fontSize(10).fillColor('black').text('N° SIRET 447 720 699 000 19 / Agrément Sportif Jeunesse et Sports N°12232')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('SECTION USM TAEKWONDO')
+    doc.fontSize(10).fillColor('black').text('Mairie de Marolles En Hurepoix - 1, avenue Charles De Gaulle - 91630 MAROLLES EN HUREPOIX')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('06.62.50.36.69 / 06.17.45.14.91')
+    doc.fontSize(10).fillColor('blue').text('marollestaekwondo@gmail.com')
+    doc.fontSize(10).fillColor('blue').text('https://www.facebook.com/UsmTaekwondo')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('N° d\'affiliation F.F.S.T. : 10-91-2550 / FFTDA : 910474')
     // Finaliser le PDF
     doc.end();
 
