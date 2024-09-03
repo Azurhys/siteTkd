@@ -130,19 +130,19 @@ const InscriptionForm = () => {
 
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <h2 className="text-2xl font-bold mb-4">Créer une inscription</h2>
+    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded">
+      <h2 className="text-2xl font-bold mb-4 text-center">Créer une inscription</h2>
       
       {/* Sélection de l'adhérent */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="adherentID">
+        <label className="form-label fs-4 fw-bold" htmlFor="adherentID">
           Sélectionner un adhérent
         </label>
         <select
           name="adherentID"
           value={formData.adherentID}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         >
           <option value="">-- Sélectionner un adhérent --</option>
@@ -156,14 +156,14 @@ const InscriptionForm = () => {
 
       {/* Sélection de la formule */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="formuleID">
+        <label className="form-label fs-4 fw-bold" htmlFor="formuleID">
           Sélectionner une formule
         </label>
         <select
           name="formuleID"
           value={formData.formuleID}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         >
           <option value="">-- Sélectionner une formule --</option>
@@ -177,7 +177,7 @@ const InscriptionForm = () => {
       
       {/* Passeport FFTDA */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="passeportFFTDA">
+        <label class="form-check-label" htmlFor="passeportFFTDA">
           Ajouter un passeport FFTDA (+20€)
         </label>
         <input
@@ -185,21 +185,21 @@ const InscriptionForm = () => {
           name="passeportFFTDA"
           checked={formData.passeportFFTDA}
           onChange={handleChange}
-          className="mr-2 leading-tight"
-        />
+          className="form-check-input mx-3"
+          />
       </div>
 
       {/* Sélection du Dobok */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dobokID">
+        <label className="form-label fs-4 fw-bold" htmlFor="dobokID">
           Sélectionner un Dobok
         </label>
         <select
           name="dobokID"
           value={formData.dobokID}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        >
+          className="form-control"
+          >
           <option value="">-- Aucun Dobok --</option>
           {doboks.map(dobok => (
             <option key={dobok.ID} value={dobok.ID}>
@@ -211,15 +211,15 @@ const InscriptionForm = () => {
 
       {/* Réduction famille nombreuse */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="reductionFamille">
+        <label className="form-label fs-4 fw-bold" htmlFor="reductionFamille">
           Réduction famille nombreuse
         </label>
         <select
           name="reductionFamille"
           value={formData.reductionFamille}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        >
+          className="form-control"
+          >
           <option value="0">Pas de réduction</option>
           <option value="15">-15 € (2ème membre inscrit)</option>
           <option value="20">-20 € (3ème membre inscrit)</option>
@@ -229,7 +229,7 @@ const InscriptionForm = () => {
 
       {/* Réduction PASS' SPORT */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="reductionPASS">
+        <label class="form-check-label" htmlFor="reductionPASS">
           Appliquer la réduction PASS' SPORT
         </label>
         <input
@@ -237,15 +237,15 @@ const InscriptionForm = () => {
           name="reductionPASS"
           checked={formData.reductionPASS}
           onChange={handleChange}
-          className="mr-2 leading-tight"
-        />
+          className="form-check-input mx-3"
+          />
         {formData.reductionPASS && (
           <input
             type="text"
             name="codePassSport"
             value={formData.codePassSport}
             onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-2"
+            className="form-control my-3"
             placeholder="Entrez le code PASS' SPORT"
           />
         )}
@@ -253,14 +253,14 @@ const InscriptionForm = () => {
 
       {/* Mode de paiement */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="modePaiement">
+        <label className="form-label fs-4 fw-bold" htmlFor="modePaiement">
           Mode de paiement
         </label>
         <select
           name="modePaiement"
           value={formData.modePaiement}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         >
           <option value="Espèces">Espèces</option>
@@ -273,20 +273,20 @@ const InscriptionForm = () => {
 
         {/* Affichage du coût total */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
+        <label className="form-label fs-4 fw-bold">
           Coût total: {formData.coutTotal} €
         </label>
       </div>
       
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="commentaire">
+        <label className="form-label fs-4 fw-bold" htmlFor="commentaire">
           Ajouter un commentaire
         </label>
         <textarea
           name="commentaire"
           value={formData.commentaire}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           placeholder="Entrez un commentaire ici..."
         />
       </div>
@@ -294,7 +294,7 @@ const InscriptionForm = () => {
       {/* Bouton de soumission */}
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className='btn btn-success'
       >
         Ajouter l'inscription
       </button>

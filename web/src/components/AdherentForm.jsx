@@ -58,12 +58,13 @@ const AdherentForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <h2 className="text-2xl font-bold mb-4">Créer un adhérent</h2>
+    <div>
+    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded">
+      <h2 className="text-2xl font-bold mb-4 text-center">Créer un adhérent</h2>
       
       {/* Nom */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Nom">
+        <label className="form-label fs-4 fw-bold" htmlFor="Nom">
           Nom
         </label>
         <input
@@ -71,14 +72,14 @@ const AdherentForm = () => {
           name="Nom"
           value={formData.Nom}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Prénom */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Prenom">
+        <label className="form-label fs-4 fw-bold" htmlFor="Prenom">
           Prénom
         </label>
         <input
@@ -86,21 +87,21 @@ const AdherentForm = () => {
           name="Prenom"
           value={formData.Prenom}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Genre */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Genre">
+        <label className="form-label fs-4 fw-bold" htmlFor="Genre">
           Genre
         </label>
         <select
           name="Genre"
           value={formData.Genre}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         >
           <option value="M">M</option>
@@ -110,7 +111,7 @@ const AdherentForm = () => {
 
       {/* Date de Naissance */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="DateNaissance">
+        <label className="form-label fs-4 fw-bold" htmlFor="DateNaissance">
           Date de Naissance
         </label>
         <input
@@ -118,14 +119,14 @@ const AdherentForm = () => {
           name="DateNaissance"
           value={formData.DateNaissance}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Poids */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Poids">
+        <label className="form-label fs-4 fw-bold" htmlFor="Poids">
           Poids (en kg)
         </label>
         <input
@@ -133,14 +134,14 @@ const AdherentForm = () => {
           name="Poids"
           value={formData.Poids}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Taille */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Taille">
+        <label className="form-label fs-4 fw-bold" htmlFor="Taille">
           Taille (en cm)
         </label>
         <input
@@ -148,14 +149,14 @@ const AdherentForm = () => {
           name="Taille"
           value={formData.Taille}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Adresse 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Adresse1">
+        <label className="form-label fs-4 fw-bold" htmlFor="Adresse1">
           Adresse 1
         </label>
         <input
@@ -163,14 +164,14 @@ const AdherentForm = () => {
           name="Adresse1"
           value={formData.Adresse1}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Adresse 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Adresse2">
+        <label className="form-label fs-4 fw-bold" htmlFor="Adresse2">
           Adresse 2
         </label>
         <input
@@ -178,13 +179,13 @@ const AdherentForm = () => {
           name="Adresse2"
           value={formData.Adresse2}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
+          className="form-control"
+          />
       </div>
 
       {/* Code Postal */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="CodePostal">
+        <label className="form-label fs-4 fw-bold" htmlFor="CodePostal">
           Code Postal
         </label>
         <input
@@ -192,14 +193,14 @@ const AdherentForm = () => {
           name="CodePostal"
           value={formData.CodePostal}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Ville */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Ville">
+        <label className="form-label fs-4 fw-bold" htmlFor="Ville">
           Ville
         </label>
         <input
@@ -207,14 +208,14 @@ const AdherentForm = () => {
           name="Ville"
           value={formData.Ville}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Email 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Email1">
+        <label className="form-label fs-4 fw-bold" htmlFor="Email1">
           Email 1
         </label>
         <input
@@ -222,14 +223,14 @@ const AdherentForm = () => {
           name="Email1"
           value={formData.Email1}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Email 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Email2">
+        <label className="form-label fs-4 fw-bold" htmlFor="Email2">
           Email 2
         </label>
         <input
@@ -237,13 +238,13 @@ const AdherentForm = () => {
           name="Email2"
           value={formData.Email2}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
+          className="form-control"
+          />
       </div>
 
       {/* Portable 1 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Portable1">
+        <label className="form-label fs-4 fw-bold" htmlFor="Portable1">
           Portable 1
         </label>
         <input
@@ -251,14 +252,14 @@ const AdherentForm = () => {
           name="Portable1"
           value={formData.Portable1}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="form-control"
           required
         />
       </div>
 
       {/* Portable 2 */}
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Portable2">
+        <label className="form-label fs-4 fw-bold" htmlFor="Portable2">
           Portable 2
         </label>
         <input
@@ -266,8 +267,8 @@ const AdherentForm = () => {
           name="Portable2"
           value={formData.Portable2}
           onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
+          className="form-control"
+          />
       </div>
 
       {/* Bouton de soumission */}
@@ -278,6 +279,7 @@ const AdherentForm = () => {
         Ajouter
       </button>
     </form>
+    </div>
   );
 };
 
