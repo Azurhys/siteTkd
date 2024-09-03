@@ -28,6 +28,18 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+//GET by inscriptionID
+router.get('/inscription/:inscriptionId', async (req, res) => {
+  try {
+    const paiements = await Paiement.findAll({
+      where: { inscriptionID: req.params.inscriptionId }
+    });
+    res.json(paiements);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération des paiements pour l\'inscription donnée.' });
+  }
+});
+
 // POST créer un nouveau paiement
 router.post('/', async (req, res) => {
   try {
