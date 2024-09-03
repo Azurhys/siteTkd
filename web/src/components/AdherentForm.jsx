@@ -59,7 +59,7 @@ const AdherentForm = () => {
 
   return (
     <div>
-    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded">
+    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded bg-light">
       <h2 className="text-2xl font-bold mb-4 text-center">Créer un adhérent</h2>
       
       {/* Nom */}

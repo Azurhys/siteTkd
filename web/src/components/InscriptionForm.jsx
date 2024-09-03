@@ -130,7 +130,7 @@ const InscriptionForm = () => {
 
 
   return (
-    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded">
+    <form onSubmit={handleSubmit} className="m-4 p-4 border rounded bg-light">
       <h2 className="text-2xl font-bold mb-4 text-center">Créer une inscription</h2>
       
       {/* Sélection de l'adhérent */}
