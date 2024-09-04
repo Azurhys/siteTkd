@@ -125,7 +125,7 @@ router.get('/inscription/:id', async (req, res) => {
       const groupe = paiementsGroupes[key];
       doc.fontSize(12).font('Helvetica-Bold').text(`Échéance ${key}:`);
       groupe.forEach((paiement, subIndex) => {
-        doc.fontSize(12).font('Helvetica').text(`  Paiement ${subIndex + 1}: ${paiement.dataValues.Montant || 'N/A'} € - ${paiement.dataValues.MoyenPaiement || 'N/A'}`);
+        doc.fontSize(12).font('Helvetica').text(`  Paiement ${paiement.dataValues.Mois}: ${paiement.dataValues.Montant || 'N/A'} € - ${paiement.dataValues.MoyenPaiement || 'N/A'}`);
       });
       doc.moveDown(0.5);
     });

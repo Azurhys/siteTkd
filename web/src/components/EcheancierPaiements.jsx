@@ -6,17 +6,26 @@ import { toast } from 'react-toastify';
 const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
   const [nombreEcheances, setNombreEcheances] = useState(1);
   const [paiements, setPaiements] = useState([]);
+  const [modesPaiement, setModesPaiement] = useState([
+    'Espèces', 'Chèque', 'Carte Bancaire', 'ANCV', 'Coupons-sport'
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {
     calculerEcheancier();
   }, [nombreEcheances, coutTotal]);
 
+  const getMonthName = (monthIndex) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + monthIndex);
+    return date.toLocaleString('fr-FR', { month: 'long' });
+  };
+
   const calculerEcheancier = () => {
     const montantParEcheance = Math.round(coutTotal / nombreEcheances);
     const echeancier = Array.from({ length: nombreEcheances }, (_, i) => ({
       Montant: montantParEcheance,
-      Mois: `Echéance ${i + 1}`,
+      Mois: getMonthName(i), // Utiliser le nom du mois pour chaque échéance
       MoyenPaiement: modePaiement,
     }));
 
@@ -31,6 +40,13 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
 
   const handleNombreEcheancesChange = (e) => {
     setNombreEcheances(Number(e.target.value));
+  };
+
+  const handleModePaiementChange = (index, newMode) => {
+    const updatedPaiements = paiements.map((paiement, i) =>
+      i === index ? { ...paiement, MoyenPaiement: newMode } : paiement
+    );
+    setPaiements(updatedPaiements);
   };
 
   const enregistrerPaiements = async () => {
@@ -92,7 +108,19 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
         <ul>
           {paiements.map((paiement, index) => (
             <li key={index}>
-              {paiement.Mois}: {paiement.Montant} € par {paiement.MoyenPaiement}
+              {paiement.Mois}: {paiement.Montant} €
+              <select
+                value={paiement.MoyenPaiement}
+                onChange={(e) => handleModePaiementChange(index, e.target.value)}
+                className="form-control d-inline mx-2"
+                style={{ width: 'auto' }}
+              >
+                {modesPaiement.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {mode}
+                  </option>
+                ))}
+              </select>
             </li>
           ))}
         </ul>
