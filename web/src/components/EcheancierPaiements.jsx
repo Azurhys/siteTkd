@@ -72,7 +72,7 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
+      
       // Rediriger vers la page des adhérents après le téléchargement du PDF
       navigate('/adherent');
     } catch (error) {
@@ -126,6 +126,7 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
         </ul>
       </div>
 
+          
       {/* Bouton pour enregistrer les paiements */}
       <button className="btn btn-success" onClick={enregistrerPaiements}>
         Enregistrer les paiements

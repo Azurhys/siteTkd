@@ -7,7 +7,8 @@ const PaiementsPage = () => {
     const { inscriptionID } = useParams(); // Récupérer l'ID d'inscription depuis l'URL
     const [inscription, setInscription] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-  
+    const [generateInvoice, setGenerateInvoice] = useState(false);
+    
     useEffect(() => {
       const fetchInscription = async () => {
         try {
@@ -22,7 +23,21 @@ const PaiementsPage = () => {
   
       fetchInscription();
     }, [inscriptionID]);
-  
+    
+    useEffect(() => {
+      if (generateInvoice) {
+        const pdfUrl = `http://localhost:3000/api/pdf/facture/${inscriptionID}`;
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.target = '_blank'; // Ouvrir dans un nouvel onglet (optionnel)
+        link.download = `facture_${inscriptionID}.pdf`; // Nom du fichier à télécharger
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setGenerateInvoice(false); // Réinitialiser l'état après le téléchargement
+      }
+    }, [generateInvoice, inscriptionID]);
+
     if (isLoading) {
       return <div>Chargement...</div>;
     }
@@ -39,6 +54,19 @@ const PaiementsPage = () => {
           inscriptionID={inscriptionID}
           modePaiement={inscription.modePaiement}
         />
+
+        <div className="mt-4">
+          <input
+            type="checkbox"
+            id="generateInvoice"
+            checked={generateInvoice}
+            onChange={(e) => setGenerateInvoice(e.target.checked)}
+          />
+        <label htmlFor="generateInvoice" className="ml-2">
+          Générer la facture
+        </label>
+      </div>
+
       </div>
     );
   };

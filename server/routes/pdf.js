@@ -73,7 +73,7 @@ router.get('/inscription/:id', async (req, res) => {
 
     // Vérifiez si le fichier existe avant de l'insérer dans le PDF
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 40, 0, { width: 100 }); // Ajustez les coordonnées et la largeur selon vos besoins
+      doc.image(logoPath, 40, 10, { width: 100 }); // Ajustez les coordonnées et la largeur selon vos besoins
       doc.moveDown(2);
     } else {
       console.error('Logo non trouvé à l\'emplacement spécifié :', logoPath);
@@ -162,4 +162,99 @@ router.get('/inscription/:id', async (req, res) => {
   }
 });
 
+router.get('/facture/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Récupérer l'inscription
+    const inscription = await Inscription.findByPk(id);
+    if (!inscription) {
+      return res.status(404).send('Inscription non trouvée');
+    }
+
+    // Récupérer l'adhérent lié
+    const adherentID = inscription.adherentID; 
+    const adherent = adherentID ? await Adherent.findByPk(adherentID) : null;
+    if (!adherent) {
+      return res.status(404).send('Adhérent non trouvé');
+    }
+
+    // Créer un nouveau document PDF
+    const doc = new PDFDocument({ margin: 40, size: 'A4' });
+
+    // Définir le type de contenu et disposition du fichier
+    res.setHeader('Content-type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="facture_acquittee_${adherent.dataValues.Nom}_${adherent.dataValues.Prenom}.pdf"`);
+
+    // Pipe le document vers la réponse HTTP
+    doc.pipe(res);
+
+    const logoPath = path.join(__dirname, '..', 'public', 'logo.png');
+
+    // Vérifiez si le fichier existe avant de l'insérer dans le PDF
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, 40, 10, { width: 100 }); // Ajustez les coordonnées et la largeur selon vos besoins
+      doc.moveDown(2);
+    } else {
+      console.error('Logo non trouvé à l\'emplacement spécifié :', logoPath);
+    }
+
+    const signPath = path.join(__dirname, '..', 'public', 'kj3.png');
+
+    // Vérifiez si le fichier existe avant de l'insérer dans le PDF
+    if (fs.existsSync(signPath)) {
+      doc.image(signPath, 60, 400, { width: 500 }); // Ajustez les coordonnées et la largeur selon vos besoins
+      doc.moveDown(2);
+    } else {
+      console.error('Signatures non trouvé à l\'emplacement spécifié :', logoPath);
+    }
+
+    // Ajouter le titre de la facture
+    doc.fontSize(20).font('Helvetica-Bold').text('FACTURE ACQUITEE', { align: 'center' });
+    doc.moveDown(1);
+
+    // Ajouter les détails de la facture
+    doc.fontSize(16).font('Helvetica-Bold').text('Inscription au cours de TAEKWONDO', { align: 'center' });
+    doc.fontSize(14).font('Helvetica').text(`Saison 2024 / 2025 du 09/09/2024 au 30/06/2025`, { align: 'center' });
+    doc.moveDown(4);
+
+    doc.fontSize(14).font('Helvetica').text(`Prénom et Nom de l’adhérent : ${adherent.dataValues.Prenom} ${adherent.dataValues.Nom}`);
+    doc.fontSize(14).font('Helvetica').text(`Montant de l’inscription annuelle : ${inscription.dataValues.coutTotal.toFixed(2)} €`);
+    doc.moveDown(4);
+
+     // Ajouter la date du jour
+     const today = new Date();
+     const formattedDate = today.toLocaleDateString('fr-FR', {
+       day: '2-digit',
+       month: '2-digit',
+       year: 'numeric'
+     });
+ 
+     doc.fontSize(16).font('Helvetica-Bold').text(`Marolles En Hurepoix, le ${formattedDate}`,{ align: 'center' });
+    
+    doc.moveDown(15);
+
+   
+    
+
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('U.S.M. (UNION SPORTIVE DE MAROLLES)')
+    doc.fontSize(10).fillColor('black').text('N° SIRET 447 720 699 000 19 / Agrément Sportif Jeunesse et Sports N°12232')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('SECTION USM TAEKWONDO')
+    doc.fontSize(10).fillColor('black').text('Mairie de Marolles En Hurepoix - 1, avenue Charles De Gaulle - 91630 MAROLLES EN HUREPOIX')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('06.62.50.36.69 / 06.17.45.14.91')
+    doc.fontSize(10).fillColor('blue').text('marollestaekwondo@gmail.com')
+    doc.fontSize(10).fillColor('blue').text('https://www.facebook.com/UsmTaekwondo')
+    doc.fontSize(10).fillColor('#3a9fbf  ').text('N° d\'affiliation F.F.S.T. : 10-91-2550 / FFTDA : 910474')
+
+    // Finaliser le PDF
+    doc.end();
+
+  } catch (error) {
+    console.error('Erreur lors de la génération de la facture:', error);
+    res.status(500).send('Erreur lors de la génération de la facture');
+  }
+});
+
 module.exports = router;
+
+
