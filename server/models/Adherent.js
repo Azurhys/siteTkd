@@ -55,7 +55,7 @@ const Adherent = sequelize.define('Adherent', {
     type: DataTypes.STRING
   }
 }, {
-  tableName: 'adherents',
+  tableName: 'Adherents',
   timestamps: false 
 });
 

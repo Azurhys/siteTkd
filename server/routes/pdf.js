@@ -6,6 +6,10 @@ const Inscription = require('../models/Inscription'); // Modèle d'inscription
 const Adherent = require('../models/Adherent'); // Modèle d'adhérent
 const Paiement = require('../models/Paiement'); // Modèle de paiement
 const Commentaires = require('../models/Commentaires'); // Modèle de commentaire
+const Dobok = require('../models/Dobok');
+const Formule = require('../models/Formule');
+const PersonneUrgence = require('../models/PersonneUrgence')
+
 const path = require('path');
 
 router.get('/inscription/:id', async (req, res) => {
@@ -37,8 +41,14 @@ router.get('/inscription/:id', async (req, res) => {
     console.log('Paiements récupérés:', paiements);
 
     // Récupérer les commentaires liés à l'adhérent
-    const commentaires = adherent.id ? await Commentaires.findAll({ where: { adherentID: adherent.id } }) : [];
+    const commentaires = adherent.ID ? await Commentaires.findAll({ where: { AdherentID: adherent.ID } }) : [];
     console.log('Commentaires récupérés:', commentaires);
+
+    const formule = await Formule.findByPk(inscription.formuleID);
+    const dobok = await Dobok.findByPk(inscription.dobokID);
+
+    const personnesUrgence = await PersonneUrgence.findAll({ where: { adherentID: adherent.ID } });
+    console.log('Personnes à prévenir récupérées:', personnesUrgence);
 
     const paiementsGroupes = {};
     paiements.forEach((paiement) => {
@@ -75,25 +85,34 @@ router.get('/inscription/:id', async (req, res) => {
 
     // Section Informations Adhérent
     doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('1. ETAT CIVIL :');
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Nom : ${adherent.dataValues.Nom || ''}`);
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Prenom : ${adherent.dataValues.Prenom || ''}`);
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Genre : ${adherent.dataValues.Genre || ''}`);
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Date de naissance : ${adherent.dataValues.DateNaissance || ''}`);
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Poids : ${adherent.dataValues.Poids || ''}`);
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Taille : ${adherent.dataValues.Taille || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Nom : ${adherent.dataValues.Nom || ''}    Prenom : ${adherent.dataValues.Prenom || ''}    Genre : ${adherent.dataValues.Genre || ''}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Date de naissance : ${adherent.dataValues.DateNaissance || ''}    Poids : ${adherent.dataValues.Poids || ''}    Taille : ${adherent.dataValues.Taille || ''}`);
     doc.fontSize(12).fillColor('black').font('Helvetica').text(`Adresse : ${adherent.dataValues.Adresse1 || ''} ${adherent.dataValues.CodePostal} ${adherent.dataValues.Ville}`);
-    doc.fillColor('black').text(`Email 1: ${adherent.dataValues.Email1 || ''}`);
-    doc.fillColor('black').text(`Email 2: ${adherent.dataValues.Email2 || ''}`);
-    doc.fillColor('black').text(`Téléphone 1 : ${adherent.dataValues.Portable1 || ''}`);
-    doc.fillColor('black').text(`Téléphone 2 : ${adherent.dataValues.Portable2 || ''}`);
+    doc.fillColor('black').text(`Email 1: ${adherent.dataValues.Email1 || ''}   Email 2: ${adherent.dataValues.Email2 || ''}`);
+    doc.fillColor('black').text(`Téléphone 1 : ${adherent.dataValues.Portable1 || ''}   Téléphone 2 : ${adherent.dataValues.Portable2 || ''}`);
     doc.moveDown(1);
+
+    doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('2. PERSONNES À PRÉVENIR EN CAS D\'URGENCE :');
+    if (personnesUrgence.length > 0) {
+      personnesUrgence.forEach((personne, index) => {
+        doc.fontSize(12).fillColor('black').font('Helvetica').text(`Personne à prévenir ${index + 1}:`);
+        doc.fontSize(12).fillColor('black').font('Helvetica').text(`  Nom : ${personne.dataValues.Nom || 'N/A'}`);
+        doc.fontSize(12).fillColor('black').font('Helvetica').text(`  Prénom : ${personne.dataValues.Prenom || 'N/A'}`);
+        doc.fontSize(12).fillColor('black').font('Helvetica').text(`  Lien de parenté : ${personne.dataValues.LienParente || 'N/A'}`);
+        doc.fontSize(12).fillColor('black').font('Helvetica').text(`  Téléphone : ${personne.dataValues.Portable || 'N/A'}`);
+        doc.moveDown(0.5);
+      });
+    } else {
+      doc.fontSize(12).fillColor('black').font('Helvetica').text('Aucune personne à prévenir enregistrée.');
+      doc.moveDown(0.5);
+    }
 
     // Section Informations Inscription
     doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('3. DETAILS DE L\'INSCRIPTION:');
-    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Formule : ${inscription.dataValues.formuleID}`);
+    doc.fontSize(12).fillColor('black').font('Helvetica').text(`Formule : ${formule.Nom} ${formule.Federation}`);
     doc.fillColor('black').text(`Réduction famille nombreuse : ${inscription.dataValues.reductionFamille ? inscription.dataValues.reductionFamille + ' €' : 'Aucune'}`);
     doc.fillColor('black').text(`Reduction PASS'SPORT : ${inscription.dataValues.reductionPASS ? inscription.dataValues.reductionPASS + ' €' : 'Aucune'} ${inscription.dataValues.codePassSport ? ', code PASS\'SPORT' + inscription.dataValues.codePassSport : ''} `);
-    doc.fillColor('black').text(`Option achat de dobok : ${inscription.dataValues.dobokID ? inscription.dataValues.dobokID + ' €' :'Aucun dobok'} `);
+    doc.fillColor('black').text(`Option achat de dobok : ${inscription.dataValues.dobokID ? 'Taille : ' + dobok.dataValues.Taille + 'cm, Prix : ' + dobok.dataValues.Prix + ' €' : 'Aucun dobok'}`);
     doc.fontSize(14).fillColor('black').font('Helvetica-Bold').text(`Coût Total: ${inscription.dataValues.coutTotal} €`);
     doc.moveDown(1);
 
@@ -124,7 +143,7 @@ router.get('/inscription/:id', async (req, res) => {
 
     doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('6. SIGNATURE:');
     doc.fontSize(12).fillColor('black').font('Helvetica').text('Date et Signature de l’adhérent ou de son représentant légal : ');
-    doc.moveDown(3);
+    doc.moveDown(5);
 
     doc.fontSize(10).fillColor('#3a9fbf  ').text('U.S.M. (UNION SPORTIVE DE MAROLLES)')
     doc.fontSize(10).fillColor('black').text('N° SIRET 447 720 699 000 19 / Agrément Sportif Jeunesse et Sports N°12232')

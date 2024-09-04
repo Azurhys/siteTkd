@@ -68,8 +68,9 @@ const InscriptionForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
+      // Créez l'inscription
       const dataToSend = {
         adherentID: formData.adherentID,
         formuleID: formData.formuleID,
@@ -81,14 +82,22 @@ const InscriptionForm = () => {
         coutTotal: formData.coutTotal,
         codePassSport: formData.reductionPASS ? formData.codePassSport : null
       };
-
+  
       const inscriptionResponse = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
       const createdInscriptionID = inscriptionResponse.data.id; // Récupérer l'ID de l'inscription créée
-
-      // Rediriger vers la page des paiements avec l'ID de l'inscription
+  
+      // Créez le commentaire si disponible
+      if (formData.commentaire) {
+        await axios.post('http://localhost:9017/api/commentaires', {
+          AdherentID: formData.adherentID,
+          Commentaire: formData.commentaire
+        });
+      }
+  
+      // Redirigez vers la page des paiements avec l'ID de l'inscription
       toast.success('Inscription enregistrée avec succès.');
       navigate(`/paiements/${createdInscriptionID}`);
-
+  
     } catch (error) {
       toast.error("Erreur lors de la création de l'inscription ou du commentaire:", error.message);
     } finally {

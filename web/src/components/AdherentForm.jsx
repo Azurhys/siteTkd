@@ -21,7 +21,15 @@ const AdherentForm = () => {
     Email1: '',
     Email2: '',
     Portable1: '',
-    Portable2: ''
+    Portable2: '',
+    PersonneUrgence1Nom: '',
+    PersonneUrgence1Prenom: '',
+    PersonneUrgence1LienParente: '',
+    PersonneUrgence1Portable: '',
+    PersonneUrgence2Nom: '',
+    PersonneUrgence2Prenom: '',
+    PersonneUrgence2LienParente: '',
+    PersonneUrgence2Portable: ''
   });
 
   // Gestionnaire de changement pour les champs de formulaire
@@ -32,11 +40,32 @@ const AdherentForm = () => {
     });
   };
 
-  // Gestionnaire de soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Créez l'adhérent en premier
       const response = await axios.post('http://localhost:3000/api/adherents', formData);
+      
+      const adherentId = response.data.ID; // Assurez-vous que le backend renvoie l'ID de l'adhérent créé
+      
+      // Créez les personnes à prévenir en cas d'urgence
+      await axios.post('http://localhost:3000/api/personne-urgence', {
+        Nom: formData.PersonneUrgence1Nom,
+        Prenom: formData.PersonneUrgence1Prenom,
+        LienParente: formData.PersonneUrgence1LienParente,
+        Portable: formData.PersonneUrgence1Portable,
+        AdherentID: adherentId
+      });
+
+      await axios.post('http://localhost:3000/api/personne-urgence', {
+        Nom: formData.PersonneUrgence2Nom,
+        Prenom: formData.PersonneUrgence2Prenom,
+        LienParente: formData.PersonneUrgence2LienParente,
+        Portable: formData.PersonneUrgence2Portable,
+        AdherentID: adherentId
+      });
+
+      // Réinitialisez le formulaire
       setFormData({
         Nom: '',
         Prenom: '',
@@ -51,12 +80,21 @@ const AdherentForm = () => {
         Email1: '',
         Email2: '',
         Portable1: '',
-        Portable2: ''
+        Portable2: '',
+        PersonneUrgence1Nom: '',
+        PersonneUrgence1Prenom: '',
+        PersonneUrgence1LienParente: '',
+        PersonneUrgence1Portable: '',
+        PersonneUrgence2Nom: '',
+        PersonneUrgence2Prenom: '',
+        PersonneUrgence2LienParente: '',
+        PersonneUrgence2Portable: ''
       });
-      toast.success('Adhérent créé avec succès !')
-      navigate('/inscription')
+
+      toast.success('Adhérent et personnes à prévenir créés avec succès !');
+      navigate('/inscription');
     } catch (error) {
-      toast.error('Erreur lors de la création de l\'adhérent:', error.message);
+      toast.error('Erreur lors de la création de l\'adhérent ou des personnes à prévenir : ' + error.message);
     }
   };
 
@@ -274,6 +312,98 @@ const AdherentForm = () => {
           />
       </div>
 
+       {/* Personne à prévenir 1 */}
+       <h3 className="text-xl font-bold mb-2">Personne à prévenir 1</h3>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence1Nom">Nom</label>
+          <input
+            type="text"
+            name="PersonneUrgence1Nom"
+            value={formData.PersonneUrgence1Nom}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence1Prenom">Prénom</label>
+          <input
+            type="text"
+            name="PersonneUrgence1Prenom"
+            value={formData.PersonneUrgence1Prenom}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence1LienParente">Lien de parenté</label>
+          <input
+            type="text"
+            name="PersonneUrgence1LienParente"
+            value={formData.PersonneUrgence1LienParente}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence1Portable">Portable</label>
+          <input
+            type="tel"
+            name="PersonneUrgence1Portable"
+            value={formData.PersonneUrgence1Portable}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        {/* Personne à prévenir 2 */}
+        <h3 className="text-xl font-bold mb-2">Personne à prévenir 2</h3>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence2Nom">Nom</label>
+          <input
+            type="text"
+            name="PersonneUrgence2Nom"
+            value={formData.PersonneUrgence2Nom}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence2Prenom">Prénom</label>
+          <input
+            type="text"
+            name="PersonneUrgence2Prenom"
+            value={formData.PersonneUrgence2Prenom}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence2LienParente">Lien de parenté</label>
+          <input
+            type="text"
+            name="PersonneUrgence2LienParente"
+            value={formData.PersonneUrgence2LienParente}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="form-label fs-4 fw-bold" htmlFor="PersonneUrgence2Portable">Portable</label>
+          <input
+            type="tel"
+            name="PersonneUrgence2Portable"
+            value={formData.PersonneUrgence2Portable}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        
       {/* Bouton de soumission */}
       <button
         type="submit"

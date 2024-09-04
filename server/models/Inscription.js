@@ -36,7 +36,7 @@ const Inscription = sequelize.define('Inscription', {
     allowNull: true
   }
 }, {
-  tableName: 'inscription',
+  tableName: 'Inscription',
   timestamps: false
 });
 
