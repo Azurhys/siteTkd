@@ -46,7 +46,7 @@ const Adherents = () => {
 
   const fetchAdherents = async () => {
     try {
-      const response = await axios.get('http://localhost:9017/api/adherents');
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/adherents`);
       setAdherents(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement des adhérents:', error.message);
@@ -55,7 +55,7 @@ const Adherents = () => {
 
   const fetchAllComments = async () => {
     try {
-      const response = await axios.get('http://localhost:9017/api/commentaires');
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires`);
       setComments(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement des commentaires:', error.message);
@@ -64,7 +64,7 @@ const Adherents = () => {
 
   const fetchAdherentDetails = async (adherentId) => {
     try {
-      const response = await axios.get(`http://localhost:9017/api/adherents/${adherentId}`);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/adherents/${adherentId}`);
       setAdherentDetails(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement des détails de l\'adhérent:', error.message);
@@ -74,7 +74,7 @@ const Adherents = () => {
 
   const fetchComments = async (adherentId) => {
     try {
-      const response = await axios.get(`http://localhost:9017/api/commentaires/adherent/${adherentId}`);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires/adherent/${adherentId}`);
       const comments = response.data;
       setComments(comments);
       setHasComments(comments.length > 0);
@@ -99,7 +99,7 @@ const Adherents = () => {
     try {
       if (editing && currentAdherent) {
         // Mettre à jour l'adhérent existant
-        await axios.put(`http://localhost:9017/api/adherents/${currentAdherent.ID}`, newAdherent);
+        await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/adherents/${currentAdherent.ID}`, newAdherent);
         setAdherents((prevAdherents) =>
           prevAdherents.map((adherent) =>
             adherent.ID === currentAdherent.ID ? { ...newAdherent, ID: currentAdherent.ID } : adherent
@@ -107,7 +107,7 @@ const Adherents = () => {
         );
       } else {
         // Ajouter un nouvel adhérent
-        const response = await axios.post('http://localhost:9017/api/adherents', newAdherent);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/adherents`, newAdherent);
         setAdherents([...adherents, response.data]);
       }
 
@@ -141,7 +141,7 @@ const Adherents = () => {
     if (!currentAdherentForComment) return;
 
     try {
-      const response = await axios.post(`http://localhost:9017/api/commentaires`, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires`, {
         Commentaire: newComment,
         AdherentID: currentAdherentForComment
       });
@@ -155,7 +155,7 @@ const Adherents = () => {
 
   const handleEditComment = async (commentId, updatedComment) => {
     try {
-      const response = await axios.put(`http://localhost:9017/api/commentaires/${commentId}`, { Commentaire: updatedComment });
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires/${commentId}`, { Commentaire: updatedComment });
       setComments((prevComments) =>
         prevComments.map((comment) =>
           comment.ID === commentId ? response.data : comment
@@ -170,7 +170,7 @@ const Adherents = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:9017/api/commentaires/${commentId}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires/${commentId}`);
       setComments((prevComments) => prevComments.filter((comment) => comment.ID !== commentId));
     } catch (error) {
       console.error('Erreur lors de la suppression du commentaire:', error.message);
@@ -185,7 +185,7 @@ const Adherents = () => {
 
   const handleDelete = async (ID) => {
     try {
-      await axios.delete(`http://localhost:9017/api/adherents/${ID}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/adherents/${ID}`);
       setAdherents((prevAdherents) => prevAdherents.filter((adherent) => adherent.ID !== ID));
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'adhérent:', error.message);

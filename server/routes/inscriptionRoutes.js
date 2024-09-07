@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Inscription = require('../models/Inscription'); 
+const Paiement = require('../models/Paiement')
 
 router.post('/inscriptions', async (req, res) => {
   try {
@@ -104,7 +105,12 @@ router.delete('/inscriptions/:id', async (req, res) => {
   try {
     const inscription = await Inscription.findByPk(req.params.id);
     if (inscription) {
+      // Supprimer les paiements associés
+      await Paiement.destroy({ where: { inscriptionID: inscription.id } });
+
+      // Supprimer l'inscription elle-même
       await inscription.destroy();
+
       res.status(204).send(); // Pas de contenu à renvoyer après suppression
     } else {
       res.status(404).json({ error: 'Inscription non trouvée' });

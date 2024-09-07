@@ -52,7 +52,7 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
   const enregistrerPaiements = async () => {
     try {
       const promises = paiements.map((paiement) =>
-        axios.post('http://localhost:9017/api/paiements', {
+        axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/paiements`, {
           InscriptionID: inscriptionID,
           Montant: paiement.Montant,
           Mois: paiement.Mois,
@@ -64,7 +64,7 @@ const EcheancierPaiements = ({ coutTotal, inscriptionID, modePaiement }) => {
       toast.success('Les paiements ont été enregistrés avec succès.');
 
       // Télécharger le PDF après avoir enregistré les paiements
-      const pdfUrl = `http://localhost:9017/api/pdf/inscription/${inscriptionID}`;
+      const pdfUrl = `${import.meta.env.VITE_BACKEND_URL}/api/pdf/inscription/${inscriptionID}`;
       const link = document.createElement('a');
       link.href = pdfUrl;
       link.target = '_blank';

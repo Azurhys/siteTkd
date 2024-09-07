@@ -27,7 +27,7 @@ const InscriptionForm = () => {
   useEffect(() => {
     const fetchAdherents = async () => {
       try {
-        const response = await axios.get('http://localhost:9017/api/adherents');
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/adherents`);
         setAdherents(response.data);
       } catch (error) {
         toast.error('Erreur lors du chargement des adhérents:', error.message);
@@ -36,7 +36,7 @@ const InscriptionForm = () => {
 
     const fetchFormules = async () => {
       try {
-        const response = await axios.get('http://localhost:9017/api/formules');
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/formules`);
         setFormules(response.data);
       } catch (error) {
         toast.error('Erreur lors du chargement des formules:', error.message);
@@ -45,7 +45,7 @@ const InscriptionForm = () => {
 
     const fetchDoboks = async () => {
       try {
-        const response = await axios.get('http://localhost:9017/api/doboks');
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/doboks`);
         setDoboks(response.data);
       } catch (error) {
         toast.error('Erreur lors du chargement des doboks:', error.message);
@@ -83,12 +83,12 @@ const InscriptionForm = () => {
         codePassSport: formData.reductionPASS ? formData.codePassSport : null
       };
   
-      const inscriptionResponse = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
+      const inscriptionResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions`, dataToSend);
       const createdInscriptionID = inscriptionResponse.data.id; // Récupérer l'ID de l'inscription créée
   
       // Créez le commentaire si disponible
       if (formData.commentaire) {
-        await axios.post('http://localhost:9017/api/commentaires', {
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/commentaires`, {
           AdherentID: formData.adherentID,
           Commentaire: formData.commentaire
         });

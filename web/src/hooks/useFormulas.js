@@ -8,7 +8,7 @@ const useFormulas = (federation) => {
   useEffect(() => {
     const fetchFormulas = async () => {
       try {
-        const response = await fetch(`http://localhost:9017/api/formules?federation=${federation}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/formules?federation=${federation}`);
         if (!response.ok) {
           throw new Error('Erreur lors de la récupération des formules');
         }

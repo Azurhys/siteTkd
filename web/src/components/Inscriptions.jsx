@@ -39,10 +39,10 @@ const Inscriptions = () => {
   const fetchData = async () => {
     try {
       const [inscriptionsRes, adherentsRes, formulesRes, doboksRes] = await Promise.all([
-        axios.get('http://localhost:9017/api/inscriptions'),
-        axios.get('http://localhost:9017/api/adherents'),
-        axios.get('http://localhost:9017/api/formules'),
-        axios.get('http://localhost:9017/api/doboks'),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/adherents`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/formules`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/doboks`),
       ]);
 
       setInscriptions(inscriptionsRes.data);
@@ -97,11 +97,11 @@ const Inscriptions = () => {
 
       if (editing && currentInscription) {
         // Update existing inscription
-        await axios.put(`http://localhost:9017/api/inscriptions/${currentInscription.id}`, dataToSend);
+        await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions/${currentInscription.id}`, dataToSend);
         setInscriptions(prevIns => prevIns.map(insc => insc.id === currentInscription.id ? { ...dataToSend, id: currentInscription.id } : insc));
       } else {
         // Create new inscription
-        const response = await axios.post('http://localhost:9017/api/inscriptions', dataToSend);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions`, dataToSend);
         setInscriptions([...inscriptions, response.data]);
       }
 
@@ -142,20 +142,57 @@ const Inscriptions = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:9017/api/inscriptions/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions/${id}`);
       setInscriptions(prevIns => prevIns.filter(insc => insc.id !== id));
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'inscription:', error.message);
     }
   };
 
+  const countInscriptionsByFormuleName = () => {
+    const counts = {
+      Babies: 0,
+      Enfants: 0,
+      "Ados/Adultes": 0,
+      Total: 0
+    };
+  
+    // Parcourir chaque inscription et compter en fonction du nom de la formule
+    inscriptions.forEach(inscription => {
+      const formule = formules.find(f => f.id === inscription.formuleID);
+      if (formule) {
+        if (formule.Nom === "Baby") {
+          counts.Babies += 1;
+        } else if (formule.Nom === "Enfants") {
+          counts.Enfants += 1;
+        } else if (formule.Nom === "Ados/Adultes") {
+          counts["Ados/Adultes"] += 1;
+        }
+        counts.Total += 1; // Compter pour le total général
+      }
+    });
+  
+    return counts;
+  };
+  
+  const inscriptionCounts = countInscriptionsByFormuleName();
+
   return (
     <div>
       <Dashboard />
     
     <div className="container mt-4">
-      <h2 className="mb-4">Gestion des Inscriptions</h2>
+      <h2 className="mb-4 text-center">Gestion des Inscriptions</h2>
       
+      {/* Résumé des inscriptions par formule */}
+      <div className="mb-3 fs-5 text-center">
+          <strong>Babies :</strong> {inscriptionCounts.Babies} &nbsp;
+          <strong>Enfants :</strong> {inscriptionCounts.Enfants} &nbsp;
+          <strong>Ados/Adultes :</strong> {inscriptionCounts["Ados/Adultes"]} &nbsp;
+          <strong>Total :</strong> {inscriptionCounts.Total}
+        </div>
+
+
       <h3 className="mb-3">Liste des inscriptions</h3>
       <table className="table table-striped">
         <thead>

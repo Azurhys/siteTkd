@@ -44,12 +44,12 @@ const AdherentForm = () => {
     e.preventDefault();
     try {
       // Créez l'adhérent en premier
-      const response = await axios.post('http://localhost:3000/api/adherents', formData);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/adherents`, formData);
       
       const adherentId = response.data.ID; // Assurez-vous que le backend renvoie l'ID de l'adhérent créé
       
       // Créez les personnes à prévenir en cas d'urgence
-      await axios.post('http://localhost:3000/api/personne-urgence', {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/personne-urgence`, {
         Nom: formData.PersonneUrgence1Nom,
         Prenom: formData.PersonneUrgence1Prenom,
         LienParente: formData.PersonneUrgence1LienParente,
@@ -57,7 +57,7 @@ const AdherentForm = () => {
         AdherentID: adherentId
       });
 
-      await axios.post('http://localhost:3000/api/personne-urgence', {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/personne-urgence`, {
         Nom: formData.PersonneUrgence2Nom,
         Prenom: formData.PersonneUrgence2Prenom,
         LienParente: formData.PersonneUrgence2LienParente,
@@ -322,7 +322,7 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence1Nom}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
         <div className="mb-4">
@@ -333,7 +333,7 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence1Prenom}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
         <div className="mb-4">
@@ -354,7 +354,7 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence1Portable}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
 
@@ -368,7 +368,7 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence2Nom}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
         <div className="mb-4">
@@ -379,7 +379,7 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence2Prenom}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
         <div className="mb-4">
@@ -400,10 +400,10 @@ const AdherentForm = () => {
             value={formData.PersonneUrgence2Portable}
             onChange={handleChange}
             className="form-control"
-            required
+            
           />
         </div>
-        
+
       {/* Bouton de soumission */}
       <button
         type="submit"

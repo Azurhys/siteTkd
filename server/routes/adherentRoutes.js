@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Adherent = require('../models/Adherent');
+const db = require('../frameworks/db/sequelize');
+const sequelize = db.sequelize;
+const Paiement = require('../models/Paiement');
+const Inscription = require('../models/Inscription'); 
+const Commentaires = require('../models/Commentaires');
+const PersonneUrgence = require('../models/PersonneUrgence');
+
 
 // Créer un nouvel adhérent
 router.post('/adherents', async (req, res) => {
@@ -122,18 +129,44 @@ router.put('/adherents/:id', async (req, res) => {
 
 // Supprimer un adhérent par ID
 router.delete('/adherents/:id', async (req, res) => {
+  const transaction = await sequelize.transaction(); // Démarre une transaction
+
   try {
-    const adherent = await Adherent.findByPk(req.params.id);
+    const adherent = await Adherent.findByPk(req.params.id, { transaction });
     if (adherent) {
-      await adherent.destroy();
+      // Supprimer les paiements liés aux inscriptions de cet adhérent
+      const inscriptions = await Inscription.findAll({ where: { adherentID: adherent.ID }, transaction });
+      const inscriptionIds = inscriptions.map(inscription => inscription.id);
+
+      if (inscriptionIds.length > 0) {
+        // Supprimer les paiements liés aux inscriptions de cet adhérent
+        await Paiement.destroy({ where: { inscriptionID: inscriptionIds }, transaction });
+
+        // Supprimer les inscriptions associées
+        await Inscription.destroy({ where: { adherentID: adherent.ID }, transaction });
+      }
+
+      await PersonneUrgence.destroy({ where: { adherentID: adherent.ID }, transaction });
+
+      // Supprimer les commentaires associés
+      await Commentaires.destroy({ where: { adherentID: adherent.ID }, transaction });
+
+      // Supprimer l'adhérent lui-même
+      await adherent.destroy({ transaction });
+
+      await transaction.commit(); // Valider la transaction
+
       res.status(204).send(); // Pas de contenu à renvoyer après suppression
     } else {
+      await transaction.rollback(); // Annuler la transaction
       res.status(404).json({ error: 'Adhérent non trouvé' });
     }
   } catch (error) {
+    await transaction.rollback(); // Annuler la transaction
     console.error("Erreur lors de la suppression de l'adhérent:", error.message);
     res.status(500).json({ error: "Erreur lors de la suppression de l'adhérent", details: error.message });
   }
 });
+
 
 module.exports = router;

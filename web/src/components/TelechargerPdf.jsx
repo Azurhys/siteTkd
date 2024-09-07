@@ -5,7 +5,7 @@ const TelechargerPDF = () => {
   const { inscriptionID } = useParams();
 
   const handleDownload = () => {
-    window.open(`http://localhost:9017/api/pdf/inscription/${inscriptionID}`, '_blank');
+    window.open(`${import.meta.env.VITE_BACKEND_URL}/api/pdf/inscription/${inscriptionID}`, '_blank');
   };
 
   return (

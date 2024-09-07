@@ -12,7 +12,7 @@ const PaiementsPage = () => {
     useEffect(() => {
       const fetchInscription = async () => {
         try {
-          const response = await axios.get(`http://localhost:9017/api/inscriptions/${inscriptionID}`);
+          const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/inscriptions/${inscriptionID}`);
           setInscription(response.data);
         } catch (error) {
           console.error("Erreur lors du chargement de l'inscription:", error.message);
@@ -26,7 +26,7 @@ const PaiementsPage = () => {
     
     useEffect(() => {
       if (generateInvoice) {
-        const pdfUrl = `http://localhost:3000/api/pdf/facture/${inscriptionID}`;
+        const pdfUrl = `${import.meta.env.VITE_BACKEND_URL}/api/pdf/facture/${inscriptionID}`;
         const link = document.createElement('a');
         link.href = pdfUrl;
         link.target = '_blank'; // Ouvrir dans un nouvel onglet (optionnel)

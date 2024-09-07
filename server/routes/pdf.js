@@ -143,7 +143,7 @@ router.get('/inscription/:id', async (req, res) => {
 
     doc.fontSize(16).fillColor('red').font('Helvetica-Bold').text('6. SIGNATURE:');
     doc.fontSize(12).fillColor('black').font('Helvetica').text('Date et Signature de l’adhérent ou de son représentant légal : ');
-    doc.moveDown(5);
+    doc.moveDown(3);
 
     doc.fontSize(10).fillColor('#3a9fbf  ').text('U.S.M. (UNION SPORTIVE DE MAROLLES)')
     doc.fontSize(10).fillColor('black').text('N° SIRET 447 720 699 000 19 / Agrément Sportif Jeunesse et Sports N°12232')

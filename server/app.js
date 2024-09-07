@@ -12,7 +12,16 @@ const pdfRoutes = require('./routes/pdf')
 const personneUrgenceRoutes = require('./routes/personneUrgence');
 
 const path = require('path')
+// Utiliser cors avec les options par défaut (autorise toutes les origines)
 app.use(cors());
+
+// Ou définir des options CORS spécifiques
+app.use(cors({
+  origin: '*', // Pour autoriser toutes les origines
+  //origin: 'http://votre-frontend-domain.com', // Pour autoriser seulement une origine spécifique
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
