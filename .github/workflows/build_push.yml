@@ -4,11 +4,8 @@ on:
   push:
     branches:
       - main
-      - dockerize
+      - dockerize  # Ajouter la branche dockerize comme déclencheur
   workflow_dispatch:
-
-env:
-  DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY || secrets.DOCKER_USERNAME }}
 
 jobs:
   build-and-push:
@@ -29,11 +26,11 @@ jobs:
     # Construire et pousser l'image pour le backend (server)
     - name: Build and push server image
       run: |
-        docker build -t $DOCKER_REPOSITORY/server:latest ./server
-        docker push $DOCKER_REPOSITORY/server:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/server:latest ./server
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/server:latest
 
     # Construire et pousser l'image pour le frontend (web)
     - name: Build and push web image
       run: |
-        docker build -t $DOCKER_REPOSITORY/web:latest ./web
-        docker push $DOCKER_REPOSITORY/web:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/web:latest ./web
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/web:latest
