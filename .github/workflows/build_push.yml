@@ -1,36 +1,52 @@
-name: Build and Push Docker Images
+name: Publish Docker images
 
 on:
   push:
-    branches:
-      - main
-      - dockerize  # Ajouter la branche dockerize comme déclencheur
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-and-push:
+  push_to_registry:
+    name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout le code source
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Étape pour récupérer le code source
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Se connecter à Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # Configurer QEMU pour l'architecture multi-plateforme
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-    # Construire et pousser l'image pour le backend (server)
-    - name: Build and push server image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/server:latest ./server
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/server:latest
+      # Configurer Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    # Construire et pousser l'image pour le frontend (web)
-    - name: Build and push web image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/web:latest ./web
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}/web:latest
+      # Se connecter à Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Construire et pousser l'image pour le serveur
+      - name: Build and push server image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: azurhys/server:latest
+
+      # Construire et pousser l'image pour le client (web)
+      - name: Build and push web image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./web
+          file: ./web/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: azurhys/web:latest
