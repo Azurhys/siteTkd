@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  client:
+    build:
+      context: ./web
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./server
+    ports:
+      - "9017:9017"
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - REACT_APP_API_URL: http://server:9017
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}  # Définir le mot de passe pour root
+      MYSQL_DATABASE: ${DB_NAME}                # Créer une base de données au démarrage
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
