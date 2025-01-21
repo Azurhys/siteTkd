@@ -4,19 +4,16 @@ FROM node:18-alpine
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers et installer les dépendances
+# Copier les fichiers package.json et package-lock.json et installer les dépendances
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copier le reste du code
+# Copier tout le reste du code source
 COPY . .
 
-# Construire l'application React
-RUN npm run build
-
-# Servir l'application avec un serveur statique
-RUN npm install -g serve
-CMD ["serve", "-s", "build"]
-
-# Exposer le port pour le serveur
+# Exposer le port pour le serveur de développement
 EXPOSE 5173
+
+# Lancer le serveur de développement
+CMD ["npm", "run", "dev"]
+

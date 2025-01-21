@@ -17,10 +17,11 @@ app.use(cors());
 
 // Ou définir des options CORS spécifiques
 app.use(cors({
-  origin: '*', // Pour autoriser toutes les origines
-  //origin: 'http://votre-frontend-domain.com', // Pour autoriser seulement une origine spécifique
+  //origin: '*', // Pour autoriser toutes les origines
+  origin: 'http://localhost:5173', // Pour autoriser seulement une origine spécifique
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  //allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
