@@ -40,7 +40,7 @@ L'architecture du projet est la suivante :
    ```env
    DB_USER=root
    DB_PASSWORD=yourpassword
-   DB_NAME=sitetkd
+   DB_NAME=taekwondo
    DB_ROOT_PASSWORD=yourpassword
    ```
 
