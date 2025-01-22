@@ -6,7 +6,7 @@ Ce projet est une application web dockerisée qui permet de gérer et de consult
 
 L'architecture du projet est la suivante :
 
-![alt text](./archi.svg)
+![alt text](./archi.png)
 
 ### Composants principaux :
 - **Client (React)** : Interface utilisateur exposée sur le port 5173.
