@@ -10,6 +10,11 @@ services:
       - app-network
     depends_on:
       - server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   server:
     build:
@@ -23,7 +28,11 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9017/api/doboks"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
     image: mysql:8.0
@@ -37,6 +46,30 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  weave-scope:
+    image: weaveworks/scope:latest
+    restart: always
+    privileged: true
+    networks:
+      - app-network
+    ports:
+      - "4040:4040" # Interface web de Weave Scope
+    command: --weave=false
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Permet l'accès au daemon Docker
+      - /proc:/host/proc
+      - /sys:/host/sys
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4040"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
   app-network:
