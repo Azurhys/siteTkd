@@ -2,6 +2,11 @@
 
 Ce projet est une application web dockerisée qui permet de gérer et de consulter des informations liées au Taekwondo. L'application est composée de trois services principaux : un client React, un serveur Node.js avec Sequelize pour la gestion de la base de données MySQL, et une base de données MySQL.
 
+## Architecture
+
+L'architecture du projet est la suivante :
+
+![alt text](./archi.svg)
 
 ### Composants principaux :
 - **Client (React)** : Interface utilisateur exposée sur le port 5173.
